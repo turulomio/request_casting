@@ -1,2 +1,9 @@
 # request_casting
-Provide method to cast django request data for POST and GET METHODS
+Python module that allows to cast django request data for POST and GET methods easyly
+
+## Test module
+cd 
+
+## Changelog
+
+### 

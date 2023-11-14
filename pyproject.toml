@@ -14,6 +14,7 @@ poetry = "^1.5.1"
 poethepoet = "^0.22.0"
 django = "^4.2.7"
 djangorestframework = "^3.14.0"
+coverage = "^7.3.2"
 
 [build-system]
 requires = ["poetry-core"]
