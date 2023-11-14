@@ -12,6 +12,8 @@ python = "^3.11"
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.5.1"
 poethepoet = "^0.22.0"
+django = "^4.2.7"
+djangorestframework = "^3.14.0"
 
 [build-system]
 requires = ["poetry-core"]
