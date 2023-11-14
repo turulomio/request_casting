@@ -2,11 +2,14 @@
 ## IF YOU NEED TO UPDATE IT PLEASE MAKE A PULL REQUEST IN THAT PROJECT AND DOWNLOAD FROM IT
 ## DO NOT UPDATE IT IN YOUR CODE
 from decimal import Decimal
-from .casts import str2bool, string2list_of_integers
-from .datetime_functions import string2dtaware, string2date
+from request_casting.reusing.casts import str2bool, string2list_of_integers
+from request_casting.reusing.datetime_functions import string2dtaware, string2date
 
 class RequestCastingError(Exception):
     pass
+
+
+
 
 ## Returns a model obect
 def RequestGetUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[]):
@@ -81,24 +84,21 @@ def RequestGetDecimal(request, field, default=None):
     except:
         raise RequestCastingError("Error in RequestGetDate")
 
-def RequestGetInteger(request, field, default=None):
-    if not field in request.GET:
+def RequestInteger(request, field, default=None):
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    
+    if not field in dictionary:
         return default
 
     try:
-        return int(request.GET.get(field))
+        return int(dictionary.get(field))
     except:
         raise RequestCastingError("Error in RequestGetInteger")
 
-
-def RequestInteger(request, field, default=None):
-    if not field in request.data:
-        return default
-
-    try:
-        return int(request.data.get(field))
-    except:
-        raise RequestCastingError("Error in RequestInteger")
 
 def RequestGetString(request, field, default=None):
     if not field in request.GET:
