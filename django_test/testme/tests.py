@@ -28,3 +28,29 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], "hi")
         self.assertEqual(r.json()["a"].__class__, str)
         
+    def test_get_bool(self):
+        client = APIClient()
+        
+        r=client.get("/bool/?a=1")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 1)
+        self.assertEqual(r.json()["a"].__class__, str)
+    
+        r=client.post("/bool/",  {"a":"1", })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "1")
+        self.assertEqual(r.json()["a"].__class__, str)
+        
+    def test_get_date(self):
+        client = APIClient()
+        
+        r=client.get("/date/?a=2023-1-1")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 1)
+        self.assertEqual(r.json()["a"].__class__, str)
+    
+        r=client.post("/bool/",  {"a":"hi", })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "hi")
+        self.assertEqual(r.json()["a"].__class__, str)
+        

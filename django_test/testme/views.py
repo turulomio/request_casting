@@ -12,3 +12,13 @@ def integer(request):
 def string(request):
     a=request_casting.RequestString(request, "a")
     return Response({"a": a}, status=status.HTTP_200_OK)
+    
+@api_view(['GET', 'POST'])    
+def bool(request):
+    a=request_casting.RequestBool(request, "a")
+    return Response({"a": a}, status=status.HTTP_200_OK)
+    
+@api_view(['GET', 'POST'])    
+def date(request):
+    a=request_casting.RequestDate(request, "a")
+    return Response({"a": a}, status=status.HTTP_200_OK)

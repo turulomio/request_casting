@@ -35,45 +35,31 @@ def RequestListUrl(request, field, class_,  default=None,select_related=[],prefe
     return r
 
 def RequestDate(request, field, default=None):
-    if not field in request.data:
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    if not field in dictionary:
         return default
-
-    if request.data.get(field) is None:
-        return default
-
     try:
-        return string2date(request.data.get(field))
+        return string2date(dictionary.get(field))
     except:
-        raise RequestCastingError("Error in RequestDate")
-
-def RequestGetDate(request, field, default=None):
-    if not field in request.GET:
-        return default
-
-    try:
-        r = string2date(request.GET.get(field))
-    except:
-        raise RequestCastingError("Error in RequestGetDate")
-    return r
-
+        raise RequestCastingError(f"Error in RequestDate with method {request.method}")
 
 def RequestBool(request, field, default=None):
-    if not field in request.data:
+    
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    if not field in dictionary:
         return default
-
     try:
-        return str2bool(str(request.data.get(field)))
+        return  str2bool(dictionary.get(field))
     except:
-        raise RequestCastingError("Error in RequestBool")
-
-def RequestGetBool(request, field, default=None):
-    if not field in request.GET:
-        return default
-
-    try:
-        return  str2bool(request.GET.get(field))
-    except:
-        raise RequestCastingError("Error in RequestGetBool")
+        raise RequestCastingError(f"Error in RequestBool with method {request.method}")
 
 def RequestGetDecimal(request, field, default=None):
     if not field in request.GET:
