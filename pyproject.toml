@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "request_casting"
+version = "0.1.0"
+description = "Provide method to cast django request data for POST and GET methods"
+authors = ["turulomio <turulomio@yahoo.es>"]
+license = "GPL-3.0 license"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+poetry = "^1.5.1"
+poethepoet = "^0.22.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks]
+release = { script = "request_casting.poethepoet:release" }
+reusing = { script = "request_casting.poethepoet:reusing" }
+translate = { script = "request_casting.poethepoet:translate" }
+
+[project.urls]
+homepage = "https://github.com/turulomio/request_casting/"
+repository = "https://github.com/turulomio/request_casting/"
+changelog = "https://github.com/turulomio/request_casting#changelog"

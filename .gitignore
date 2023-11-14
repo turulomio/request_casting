@@ -1,0 +1,10 @@
+__pycache__/
+build/
+develop-eggs/
+dist/
+*.egg-info/
+.eric6project/
+.eric7project/
+*.po~
+doc/html/
+.jedi/
