@@ -6,4 +6,4 @@ class Command(BaseCommand):
         #Generate fixtures
                 
     def handle(self, *args, **options):
-        system("coverage run --omit=testme/reusing/*,../request_casting/reusing/* manage.py test ; coverage html")
+        system("coverage run --omit=testme/reusing/*,../request_casting/reusing/* manage.py test ; coverage report;coverage html")

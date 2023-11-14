@@ -3,7 +3,7 @@ from gettext import translation
 from importlib.resources import files
 #from request_casting.reusing.file_functions import replace_in_file
 from request_casting import __version__
-from os import system
+from os import system, chdir
 from sys import argv
 
         
@@ -12,6 +12,11 @@ try:
     _=t.gettext
 except:
     _=str
+    
+    
+def coverage():
+    chdir("django_test")
+    system("python manage.py coverage")
 
 
 def reusing():
@@ -44,6 +49,7 @@ def release():
   * Cambiar la versión y la fecha en __init__.py
   * Cambiar la versión en pyproject.toml
   * Modificar el Changelog en README
+  * poe coverage
   * poe translate
   * linguist
   * poe translate

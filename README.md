@@ -2,7 +2,8 @@
 Python module that allows to cast django request data for POST and GET methods easyly
 
 ## Test module
-cd 
+
+poe coverage
 
 ## Changelog
 
