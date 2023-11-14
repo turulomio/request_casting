@@ -19,4 +19,5 @@ from testme import views
 
 urlpatterns = [
     path('integer/', views.integer),
+    path('string/', views.string),
 ]

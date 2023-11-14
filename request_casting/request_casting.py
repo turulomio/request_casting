@@ -100,15 +100,6 @@ def RequestInteger(request, field, default=None):
         raise RequestCastingError("Error in RequestGetInteger")
 
 
-def RequestGetString(request, field, default=None):
-    if not field in request.GET:
-        return default
-
-    try:
-        return request.GET.get(field, default)
-    except:
-        raise RequestCastingError("Error in RequestGetDate")
-
 
 def RequestGetListOfStringIntegers(request, field, default=None, separator=","):    
     if not field in request.GET:
@@ -224,12 +215,18 @@ def RequestDecimal(request, field, default=None):
         raise RequestCastingError("Error in RequestDecimal")
 
 def RequestString(request, field, default=None):
-    if not field in request.data:
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    if not field in dictionary:
         return default
     try:
-        return request.data.get(field)
+        return dictionary.get(field)
     except:
-        raise RequestCastingError("Error in RequestString")
+        raise RequestCastingError(f"Error in RequestString with method {request.method}")
+
 
 def ids_from_list_of_urls(list_):
     r=[]

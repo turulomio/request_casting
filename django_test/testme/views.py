@@ -7,3 +7,8 @@ from rest_framework import  status
 def integer(request):
     a=request_casting.RequestInteger(request, "a")
     return Response({"a": a}, status=status.HTTP_200_OK)
+    
+@api_view(['GET', 'POST'])    
+def string(request):
+    a=request_casting.RequestString(request, "a")
+    return Response({"a": a}, status=status.HTTP_200_OK)

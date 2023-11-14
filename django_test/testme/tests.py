@@ -10,10 +10,21 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], 1)
         self.assertEqual(r.json()["a"].__class__, int)
     
-    def test_post_integer(self):
-        client = APIClient()    
         r=client.post("/integer/",  {"a":1, })
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], 1)
         self.assertEqual(r.json()["a"].__class__, int)
+        
+    def test_get_string(self):
+        client = APIClient()
+        
+        r=client.get("/string/?a=hi")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "hi")
+        self.assertEqual(r.json()["a"].__class__, str)
+    
+        r=client.post("/string/",  {"a":"hi", })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "hi")
+        self.assertEqual(r.json()["a"].__class__, str)
         
