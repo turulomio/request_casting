@@ -139,7 +139,7 @@ def RequestListOfIntegers(request, field, default=None,  separator=","):
 
     try:
         r=[]
-        items=request.GET.getlist(field, [])
+        items=dictionary.getlist(field, [])
         for i in items:
             r.append(int(i))
         return r

@@ -67,7 +67,6 @@ def list_of_urls(request):
     if request.method=="GET":
         a=request_casting.RequestListOfUrls(request, "a[]", models.Record)
     else:
-        print(request.data)
         a=request_casting.RequestListOfUrls(request, "a", models.Record)
     return Response({"a": len(a),  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)     
     

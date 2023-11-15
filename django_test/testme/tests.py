@@ -180,6 +180,19 @@ class CtTestCase(APITestCase):
         r=client.post("/list/strings/", {"a":["Elvis", "Presley"], })
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], ["Elvis",  "Presley"])
+        self.assertEqual(r.json()["class"], "list")        
+        
+    def test_get_list_of_integers(self):
+        client = APIClient()
+        
+        r=client.get("/list/integers/?a[]=1&a[]=2")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [1, 2])
+        self.assertEqual(r.json()["class"], "list")
+    
+        r=client.post("/list/integers/", {"a":[1, 2,] })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [1, 2])
         self.assertEqual(r.json()["class"], "list")
         
         
