@@ -8,3 +8,6 @@ class Record(models.Model):
     class Meta:
         managed = True
         db_table = 'records'
+
+    def __repr__(self):
+        return f"Record of user {self.user.username} took {self.datetime}"

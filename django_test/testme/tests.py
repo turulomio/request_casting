@@ -55,8 +55,8 @@ class CtTestCase(APITestCase):
             record.datetime=timezone.now()
             record.user=cls.user2
             record.save()
-        
-    
+
+        print(models.Record.objects.all())
     
     def test_get_integer(self):
         client = APIClient()
