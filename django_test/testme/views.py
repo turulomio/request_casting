@@ -23,3 +23,8 @@ def bool(request):
 def date(request):
     a=request_casting.RequestDate(request, "a")
     return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)
+    
+@api_view(['GET', 'POST'])    
+def decimal(request):
+    a=request_casting.RequestDecimal(request, "a")
+    return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)

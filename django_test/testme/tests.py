@@ -1,4 +1,6 @@
 from datetime import date
+from decimal import Decimal
+from request_casting import request_casting
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
@@ -55,3 +57,20 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], "2023-01-01")
         self.assertEqual(r.json()["class"], "date")
         
+        
+        
+    def test_get_decimal(self):
+        client = APIClient()
+        
+        r=client.get("/decimal/?a=2023.12")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 2023.12)
+        self.assertEqual(r.json()["class"], "Decimal")
+    
+        r=client.post("/decimal/",  {"a": Decimal(12.123) })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 12.123)
+        self.assertEqual(r.json()["class"], "Decimal")
+        
+        with self.assertRaises(request_casting.RequestCastingError):
+            r=client.get("/decimal/?a=baddecimal")

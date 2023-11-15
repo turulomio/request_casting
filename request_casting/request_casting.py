@@ -61,22 +61,26 @@ def RequestBool(request, field, default=None):
     except:
         raise RequestCastingError(f"Error in RequestBool with method {request.method}")
 
-def RequestGetDecimal(request, field, default=None):
-    if not field in request.GET:
+def RequestDecimal(request, field, default=None):
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    if not field in dictionary:
         return default
 
     try:
-        return Decimal(request.GET.get(field))
+        return Decimal(dictionary.get(field))
     except:
-        raise RequestCastingError("Error in RequestGetDate")
+        raise RequestCastingError(f"Error in RequestDecimal with method {request.method}")
 
 def RequestInteger(request, field, default=None):
     if request.method=="GET":
         dictionary=request.GET
     else:
         dictionary=request.data
-        
-    
+
     if not field in dictionary:
         return default
 
@@ -84,8 +88,6 @@ def RequestInteger(request, field, default=None):
         return int(dictionary.get(field))
     except:
         raise RequestCastingError("Error in RequestGetInteger")
-
-
 
 def RequestGetListOfStringIntegers(request, field, default=None, separator=","):    
     if not field in request.GET:
@@ -190,15 +192,6 @@ def RequestDtaware(request, field, timezone_string, default=None):
     except:
         raise RequestCastingError("Error in RequestDtaware")
 
-
-def RequestDecimal(request, field, default=None):
-    if not field in request.data:
-        return default
-
-    try:
-        return Decimal(request.data.get(field))
-    except:
-        raise RequestCastingError("Error in RequestDecimal")
 
 def RequestString(request, field, default=None):
     if request.method=="GET":
