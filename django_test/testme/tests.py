@@ -56,7 +56,7 @@ class CtTestCase(APITestCase):
             record.user=cls.user2
             record.save()
 
-        print(models.Record.objects.all())
+#        print(models.Record.objects.all())
     
     def test_get_integer(self):
         client = APIClient()
@@ -181,3 +181,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], ["Elvis",  "Presley"])
         self.assertEqual(r.json()["class"], "list")
+        
+        
+    def test_get_list_of_urls(self):
+        client = APIClient()
+        r=client.get("/list/urls/?a[]=http://localhost:8000/api/records/1/&a[]=http://localhost:8000/api/records/3/")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 2)
+        self.assertEqual(r.json()["class"], "QuerySet")
+        
+        r=client.post("/list/urls/", {"a": ["http://localhost:8000/api/records/1/", "http://localhost:8000/api/records/3/"]})
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 2)
+        self.assertEqual(r.json()["class"], "QuerySet")

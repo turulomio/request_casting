@@ -28,7 +28,7 @@ def RequestListOfUrls(request, field, class_,  default=None,select_related=[],pr
     if not field in dictionary:
         return default
 
-    r=queryset_from_list_of_urls(dictionary.get(field), class_, select_related, prefetch_related)
+    r=queryset_from_list_of_urls(dictionary.getlist(field), class_, select_related, prefetch_related)
     return r
 
 def RequestDate(request, field, default=None):
