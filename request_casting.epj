@@ -2,7 +2,7 @@
   "header": {
     "comment": "eric project file for project request_casting",
     "copyright": "Copyright (C) 2023 , ",
-    "saved": "2023-11-14, 13:03:23"
+    "saved": "2023-11-15, 07:32:33"
   },
   "project": {
     "AUTHOR": "",
@@ -56,7 +56,8 @@
     "MIXEDLANGUAGE": false,
     "OTHERS": [
       "README.md",
-      "pyproject.toml"
+      "pyproject.toml",
+      "request_casting.epj"
     ],
     "OTHERTOOLSPARMS": {},
     "PACKAGERSPARMS": {},
@@ -71,11 +72,26 @@
     },
     "RESOURCES": [],
     "SOURCES": [
+      "django_test/django_test/__init__.py",
+      "django_test/django_test/asgi.py",
+      "django_test/django_test/settings.py",
+      "django_test/django_test/urls.py",
+      "django_test/django_test/wsgi.py",
+      "django_test/manage.py",
+      "django_test/testme/__init__.py",
+      "django_test/testme/admin.py",
+      "django_test/testme/apps.py",
+      "django_test/testme/management/commands/coverage.py",
+      "django_test/testme/migrations/__init__.py",
+      "django_test/testme/models.py",
+      "django_test/testme/tests.py",
+      "django_test/testme/views.py",
       "request_casting/__init__.py",
       "request_casting/poethepoet.py",
       "request_casting/request_casting.py",
       "request_casting/reusing/casts.py",
       "request_casting/reusing/datetime_functions.py",
+      "request_casting/reusing/file_functions.py",
       "request_casting/reusing/github.py"
     ],
     "SOURCESDIR": "",

@@ -6,19 +6,20 @@ from rest_framework import  status
 @api_view(['GET', 'POST'])    
 def integer(request):
     a=request_casting.RequestInteger(request, "a")
-    return Response({"a": a}, status=status.HTTP_200_OK)
+    return Response({"a": a, "class": a.__class__.__name__}, status=status.HTTP_200_OK)
     
 @api_view(['GET', 'POST'])    
 def string(request):
     a=request_casting.RequestString(request, "a")
-    return Response({"a": a}, status=status.HTTP_200_OK)
+    return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)
     
 @api_view(['GET', 'POST'])    
 def bool(request):
     a=request_casting.RequestBool(request, "a")
-    return Response({"a": a}, status=status.HTTP_200_OK)
+    print(a)
+    return Response({"a": a,  "class": a.__class__.__name__}, status=status.HTTP_200_OK)
     
 @api_view(['GET', 'POST'])    
 def date(request):
     a=request_casting.RequestDate(request, "a")
-    return Response({"a": a}, status=status.HTTP_200_OK)
+    return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)
