@@ -1,7 +1,12 @@
 from request_casting import request_casting
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import  status
+from rest_framework import  status, viewsets
+from testme import models, serializers
+
+class RecordViewSet(viewsets.ModelViewSet):
+    queryset = models.Record.objects.all()
+    serializer_class = serializers.RecordSerializer
 
 @api_view(['GET', 'POST'])    
 def integer(request):
@@ -43,8 +48,11 @@ def list_of_bools(request):
 
 @api_view(['GET', 'POST'])    
 def list_of_integers(request):
-    a=request_casting.RequestListOfIntegers(request, "a")
-    return Response({"a": a,  "class": a.__class__.__name__, "item0": a[0] }, status=status.HTTP_200_OK)
+    if request.method=="GET":
+        a=request_casting.RequestListOfIntegers(request, "a[]")
+    else:
+        a=request_casting.RequestListOfIntegers(request, "a")
+    return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)
     
 @api_view(['GET', 'POST'])    
 def list_of_strings(request):
@@ -52,7 +60,7 @@ def list_of_strings(request):
         a=request_casting.RequestListOfStrings(request, "a[]")
     else:
         a=request_casting.RequestListOfStrings(request, "a")
-    return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)
+    return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)     
     
 @api_view(['GET', 'POST'])    
 def list_of_urls(request):

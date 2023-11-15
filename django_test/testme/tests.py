@@ -1,10 +1,63 @@
 from datetime import datetime, date
 from decimal import Decimal
+from django.utils import timezone
 from request_casting import request_casting
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
+from django.contrib.auth.models import User
+from testme import models
 
 class CtTestCase(APITestCase):    
+    
+
+    @classmethod
+    def setUpClass(cls):
+        """
+            Only instantiated once
+        """
+        super().setUpClass()
+        
+        cls.user1 = User(
+            email='user1@testing.com',
+            first_name='User1',
+            last_name='User1',
+            username='user1',
+        )
+        cls.user1.set_password('user1')
+        cls.user1.save()        
+        
+        cls.user2 = User(
+            email='user2@testing.com',
+            first_name='User2',
+            last_name='User2',
+            username='user2',
+        )
+        cls.user2.set_password('user2')
+        cls.user2.save()
+        
+        # User to confront security
+        cls.user_authorized_2 = User(
+            email='other@other.com',
+            first_name='Other',
+            last_name='Other',
+            username='other',
+        )
+        cls.user_authorized_2.set_password('other123')
+        cls.user_authorized_2.save()
+
+        for i in range(5):
+            record=models.Record()
+            record.datetime=timezone.now()
+            record.user=cls.user1
+            record.save()
+            
+            record=models.Record()
+            record.datetime=timezone.now()
+            record.user=cls.user2
+            record.save()
+        
+    
+    
     def test_get_integer(self):
         client = APIClient()
         
