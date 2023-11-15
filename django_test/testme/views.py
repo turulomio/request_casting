@@ -16,7 +16,6 @@ def string(request):
 @api_view(['GET', 'POST'])    
 def bool(request):
     a=request_casting.RequestBool(request, "a")
-    print(a)
     return Response({"a": a,  "class": a.__class__.__name__}, status=status.HTTP_200_OK)
     
 @api_view(['GET', 'POST'])    
@@ -33,3 +32,37 @@ def decimal(request):
 def dtaware(request):
     a=request_casting.RequestDtaware(request, "a", "UTC")
     return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)
+    
+@api_view(['GET', 'POST'])    
+def list_of_bools(request):
+    if request.method=="GET":
+        a=request_casting.RequestListOfBools(request, "a[]")
+    else:
+        a=request_casting.RequestListOfBools(request, "a")
+    return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'POST'])    
+def list_of_integers(request):
+    a=request_casting.RequestListOfIntegers(request, "a")
+    return Response({"a": a,  "class": a.__class__.__name__, "item0": a[0] }, status=status.HTTP_200_OK)
+    
+@api_view(['GET', 'POST'])    
+def list_of_strings(request):
+    if request.method=="GET":
+        a=request_casting.RequestListOfStrings(request, "a[]")
+    else:
+        a=request_casting.RequestListOfStrings(request, "a")
+    return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)
+    
+@api_view(['GET', 'POST'])    
+def list_of_urls(request):
+    a=request_casting.RequestListUrl(request, "a")
+    return Response({"a": a,  "class": a.__class__.__name__, "item0": a[0] }, status=status.HTTP_200_OK)
+    
+@api_view(['GET', 'POST'])    
+def url(request):
+    a=request_casting.RequestUrl(request, "a")
+    return Response({"a": a,  "class": a.__class__.__name__, "item0": a[0] }, status=status.HTTP_200_OK)
+    
+
+    

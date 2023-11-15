@@ -2,36 +2,33 @@
 ## IF YOU NEED TO UPDATE IT PLEASE MAKE A PULL REQUEST IN THAT PROJECT AND DOWNLOAD FROM IT
 ## DO NOT UPDATE IT IN YOUR CODE
 from decimal import Decimal
-from request_casting.reusing.casts import str2bool, string2list_of_integers
+from request_casting.reusing.casts import str2bool
 from request_casting.reusing.datetime_functions import string2dtaware, string2date
 
 class RequestCastingError(Exception):
     pass
 
-
-
-
-## Returns a model obect
-def RequestGetUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[]):
-    """
-        If field doesn't exists return default
-    """
-    if not field in request.GET:
+## Returns a model object
+def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[]):   
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    if not field in dictionary:
         return default
-    return object_from_url(request.GET.get(field), class_)
- 
-## Returns a model obect
-def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[]):
-    if not field in request.data:
-        return default
-    return  object_from_url(request.data.get(field), class_, select_related, prefetch_related)
+    return  object_from_url(dictionary.get(field), class_, select_related, prefetch_related)
 
 ## Returns a query_set obect
-def RequestListUrl(request, field, class_,  default=None,select_related=[],prefetch_related=[]):
-    if not field in request.data:
+def RequestListOfUrls(request, field, class_,  default=None,select_related=[],prefetch_related=[]):
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+    if not field in dictionary:
         return default
 
-    r=queryset_from_list_of_urls(request.data.get(field), class_, select_related, prefetch_related)
+    r=queryset_from_list_of_urls(dictionary.get(field), class_, select_related, prefetch_related)
     return r
 
 def RequestDate(request, field, default=None):
@@ -48,7 +45,6 @@ def RequestDate(request, field, default=None):
         raise RequestCastingError(f"Error in RequestDate with method {request.method}")
 
 def RequestBool(request, field, default=None):
-    
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -87,52 +83,8 @@ def RequestInteger(request, field, default=None):
     try:
         return int(dictionary.get(field))
     except:
-        raise RequestCastingError("Error in RequestGetInteger")
+        raise RequestCastingError(f"Error in RequestInteger with method {request.method}")
 
-def RequestGetListOfStringIntegers(request, field, default=None, separator=","):    
-    if not field in request.GET:
-        return default
-
-    try:
-        return string2list_of_integers(request.GET.get(field), separator)
-    except:
-        raise RequestCastingError("Error in RequestGetListOfStringIntegers")
-
-    
-    
-## Used to get array in this situation calls when investments is an array of integers
-    ## To use this methos use axios 
-    ##            var headers={...this.myheaders(),params:{investments:this.strategy.investments,otra:"OTTRA"}}
-    ##            return axios.get(`${this.$store.state.apiroot}/api/dividends/`, headers)
-    ## request.GET returns <QueryDict: {'investments[]': ['428', '447'], 'otra': ['OTRA']}>
-
-def RequestGetListOfIntegers(request, field, default=[]):    
-    if not field in request.GET:
-        return default
-
-    try:
-        r=[]
-        items=request.GET.getlist(field, [])
-        for i in items:
-            r.append(int(i))
-        return r
-    except:
-        raise RequestCastingError("Error in RequestGetListOfIntegers")
-
-def RequestGetListOfStrings(request, field, default=[]):    
-    if not field in request.GET:
-        return default
-
-    try:
-        r=[]
-        items=request.GET.getlist(field, [])
-        for i in items:
-            r.append(str(i))
-        return r
-    except:
-        raise RequestCastingError("Error in RequestGetListOfStrings")
-        
-        
 def RequestListOfStrings(request, field, default=[]):    
     if request.method=="GET":
         dictionary=request.GET
@@ -151,27 +103,48 @@ def RequestListOfStrings(request, field, default=[]):
     except:
         raise RequestCastingError(f"Error in RequestListOfStrings with method {request.method}")
 
-def RequestGetListOfBooleans(request, field, default=[]):    
-    if not field in request.GET:
+def RequestListOfBools(request, field, default=[]):    
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    if not field in dictionary:
         return default
+
+    try:
+        r=[]
+        items=dictionary.getlist(field)
+        for i in items:
+            r.append(str2bool(i))
+        return r
+    except:
+        raise RequestCastingError(f"Error in RequestListOfBools with method {request.method}")
+        
+            
+## Used to get array in this situation calls when investments is an array of integers
+    ## To use this methos use axios 
+    ##            var headers={...this.myheaders(),params:{investments:this.strategy.investments,otra:"OTTRA"}}
+    ##            return axios.get(`${this.$store.state.apiroot}/api/dividends/`, headers)
+    ## request.GET returns <QueryDict: {'investments[]': ['428', '447'], 'otra': ['OTRA']}>
+def RequestListOfIntegers(request, field, default=None,  separator=","):
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    if not field in dictionary:
+        return default
+
 
     try:
         r=[]
         items=request.GET.getlist(field, [])
         for i in items:
-            r.append(str2bool(i))
+            r.append(int(i))
         return r
     except:
-        raise RequestCastingError("Error in RequestGetListOfBooleans")
-
-def RequestListOfIntegers(request, field, default=None,  separator=","):
-    if not field in request.data:
-        return default
-
-    try:
-        return string2list_of_integers(str(request.data.get(field))[1:-1], separator)
-    except:
-        raise RequestCastingError("Error in RequestListOfIntegers")
+        raise RequestCastingError(f"Error in RequestListOfIntegers with method {request.method}")
 
 def RequestDtaware(request, field, timezone_string, default=None):
     if request.method=="GET":

@@ -89,3 +89,29 @@ class CtTestCase(APITestCase):
         
         with self.assertRaises(request_casting.RequestCastingError):
             r=client.get("/dtaware/?a=baddt")
+
+    def test_get_list_of_bools(self):
+        client = APIClient()
+        
+        r=client.get("/list/bools/?a[]=true&a[]=false")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [True, False])
+        self.assertEqual(r.json()["class"], "list")
+    
+        r=client.post("/list/bools/", {"a":[True,False], })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [True, False])
+        self.assertEqual(r.json()["class"], "list")
+        
+    def test_get_list_of_strings(self):
+        client = APIClient()
+        
+        r=client.get("/list/strings/?a[]=Elvis&a[]=Presley")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], ["Elvis", "Presley"])
+        self.assertEqual(r.json()["class"], "list")
+    
+        r=client.post("/list/strings/", {"a":["Elvis", "Presley"], })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], ["Elvis",  "Presley"])
+        self.assertEqual(r.json()["class"], "list")
