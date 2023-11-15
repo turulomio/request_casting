@@ -1,7 +1,13 @@
-from django.urls import path
+from django.urls import path, include
 from testme import views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+routers.DefaultRouter
+router.register(r'records', views.RecordViewSet)
 
 urlpatterns = [
+    path('api/', include(router.urls)),
     path('bool/', views.bool),
     path('date/', views.date),
     path('decimal/', views.decimal),

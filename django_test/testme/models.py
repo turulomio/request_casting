@@ -10,4 +10,7 @@ class Record(models.Model):
         db_table = 'records'
 
     def __repr__(self):
-        return f"Record of user {self.user.username} took {self.datetime}"
+        return f"Record {self.id} of user {self.user.username} took {self.datetime}"
+        
+    def __str__(self):
+        return self.__repr__()

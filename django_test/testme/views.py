@@ -65,12 +65,12 @@ def list_of_strings(request):
 @api_view(['GET', 'POST'])    
 def list_of_urls(request):
     a=request_casting.RequestListUrl(request, "a")
-    return Response({"a": a,  "class": a.__class__.__name__, "item0": a[0] }, status=status.HTTP_200_OK)
+    return Response({"a": a,  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)     
     
 @api_view(['GET', 'POST'])    
 def url(request):
-    a=request_casting.RequestUrl(request, "a")
-    return Response({"a": a,  "class": a.__class__.__name__, "item0": a[0] }, status=status.HTTP_200_OK)
+    a=request_casting.RequestUrl(request, "a", models.Record)
+    return Response({"a": str(a),  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)     
     
 
     
