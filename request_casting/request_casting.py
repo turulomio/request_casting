@@ -173,24 +173,19 @@ def RequestListOfIntegers(request, field, default=None,  separator=","):
     except:
         raise RequestCastingError("Error in RequestListOfIntegers")
 
-def RequestGetDtaware(request, field, timezone_string, default=None):
-    if not field in request.GET:
-        return default
-
-    try:
-        return string2dtaware(request.GET.get(field), "JsUtcIso", timezone_string)
-    except:
-        raise RequestCastingError("Error in RequestGetDtaware")
-
-
 def RequestDtaware(request, field, timezone_string, default=None):
-    if not field in request.data:
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    if not field in dictionary:
         return default
 
     try:
-        return string2dtaware(request.data.get(field), "JsUtcIso", timezone_string)
+        return string2dtaware(dictionary.get(field), "JsUtcIso", timezone_string)
     except:
-        raise RequestCastingError("Error in RequestDtaware")
+        raise RequestCastingError(f"Error in RequestDtaware with method {request.method}")
 
 
 def RequestString(request, field, default=None):

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime, date
 from decimal import Decimal
 from request_casting import request_casting
 from rest_framework import status
@@ -73,4 +73,19 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["class"], "Decimal")
         
         with self.assertRaises(request_casting.RequestCastingError):
-            r=client.get("/decimal/?a=baddecimal")
+            r=client.get("/decimal/?a=baddecimal")        
+
+    def test_get_dtaware(self):
+        client = APIClient()
+        
+        r=client.get("/dtaware/?a=2011-10-05T14:48:00.000Z")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "2011-10-05T14:48:00Z")
+        self.assertEqual(r.json()["class"], "datetime")
+    
+        r=client.post("/dtaware/",  {"a": datetime.utcnow() })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["class"], "datetime")
+        
+        with self.assertRaises(request_casting.RequestCastingError):
+            r=client.get("/dtaware/?a=baddt")
