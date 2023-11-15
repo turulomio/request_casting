@@ -121,12 +121,6 @@ def RequestListOfBools(request, field, default=[]):
     except:
         raise RequestCastingError(f"Error in RequestListOfBools with method {request.method}")
         
-            
-## Used to get array in this situation calls when investments is an array of integers
-    ## To use this methos use axios 
-    ##            var headers={...this.myheaders(),params:{investments:this.strategy.investments,otra:"OTTRA"}}
-    ##            return axios.get(`${this.$store.state.apiroot}/api/dividends/`, headers)
-    ## request.GET returns <QueryDict: {'investments[]': ['428', '447'], 'otra': ['OTRA']}>
 def RequestListOfIntegers(request, field, default=None,  separator=","):
     if request.method=="GET":
         dictionary=request.GET
