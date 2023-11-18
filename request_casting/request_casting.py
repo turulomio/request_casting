@@ -1,12 +1,63 @@
-## THIS IS FILE IS FROM https://github.com/turulomio/reusingcode/python/request_casting.py
-## IF YOU NEED TO UPDATE IT PLEASE MAKE A PULL REQUEST IN THAT PROJECT AND DOWNLOAD FROM IT
-## DO NOT UPDATE IT IN YOUR CODE
+from datetime import datetime,  date, timedelta, timezone
 from decimal import Decimal
-from request_casting.reusing.casts import str2bool
-from request_casting.reusing.datetime_functions import string2dtaware, string2date
 
 class RequestCastingError(Exception):
     pass
+
+## Converts strings True or False to boolean
+## @param s String
+## @return Boolean
+def str2bool(value):
+    if value=="0" or value.lower()=="false":
+        return False
+    elif value=="1" or value.lower()=="true":
+        return True
+    else:
+        raise RequestCastingError(f"Error in str2bool with value {value} with class {value.__class__}")
+
+
+## Changes zoneinfo from a dtaware object
+## For example:
+## - datetime.datetime(2018, 5, 18, 8, 12, tzinfo=<DstTzInfo 'Europe/Madrid' CEST+2:00:00 DST>)
+## - libcaloriestrackerfunctions.dtaware_changes_tz(a,"Europe/London")
+## - datetime.datetime(2018, 5, 18, 7, 12, tzinfo=<DstTzInfo 'Europe/London' BST+1:00:00 DST>)
+## @param dt datetime aware object
+## @param tzname String with datetime zone. For example: "Europe/Madrid"
+## @return datetime aware object
+def dtaware_changes_tz(dt,  tzname):
+    if dt==None:
+        return None
+    tzt=timezone(tzname)
+    tarjet=tzt.normalize(dt.astimezone(tzt))
+    return tarjet
+
+def string2date(value):
+    """
+        @param value Must be a string with iso format "2023-11-18"
+    """
+    try:
+            d=value.split("-")
+            return date(int(d[0]), int(d[1]),  int(d[2]))
+    except:
+        raise RequestCastingError(f"Error in string2date with value {value} with class {value.__class__}")
+
+def string2dtnaive(s, format):
+    arrPunto=s.split(".")
+    s=arrPunto[0]
+    micro=int(arrPunto[1]) if len(arrPunto)==2 else 0
+    dt=datetime.strptime( s, "%Y-%m-%d %H:%M:%S" )
+    dt=dt+timedelta(microseconds=micro)
+    return dt
+
+def dtnaive2dtaware(dtnaive, tz_name):
+    z=timezone(tz_name)
+    return z.localize(dtnaive)
+
+def string2dtaware(s, format, tz_name='UTC'):
+        s=s.replace("T"," ").replace("Z","")
+        dtnaive=string2dtnaive(s,"%Y-%m-%d %H:%M:%S.")
+        dtaware_utc=dtnaive2dtaware(dtnaive, 'UTC')
+        return dtaware_changes_tz(dtaware_utc, tz_name)
 
 ## Returns a model object
 def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[]):   
