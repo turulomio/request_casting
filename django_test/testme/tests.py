@@ -71,6 +71,13 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], 1)
         self.assertEqual(r.json()["class"], "int")
         
+                
+        with self.assertRaises(request_casting.RequestCastingError):
+            r=client.get("/integer/?a=badinteger")        
+
+        #To test default
+        r=client.get("/integer/?not_a=12")
+        
     def test_get_string(self):
         client = APIClient()
         
@@ -84,6 +91,8 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], "hi")
         self.assertEqual(r.json()["class"], "str")
         
+        #To test default
+        r=client.get("/string/?not_a=12")
         
     def test_get_url(self):
         client = APIClient()
@@ -97,6 +106,12 @@ class CtTestCase(APITestCase):
         assert r.json()["a"].startswith("Record 1")
         self.assertEqual(r.json()["class"], "Record")
         
+        with self.assertRaises(request_casting.RequestCastingError):
+            r=client.post("/url/", {"a":"http://localhost:8000/api/notarecord/1/"})
+
+        r=client.get("/url/?not_a=http://localhost:8000/api/record/1/")
+        self.assertEqual(r.json()["a"], "None")
+
     def test_get_bool(self):
         client = APIClient()
         
@@ -109,6 +124,12 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], True)
         self.assertEqual(r.json()["class"], "bool")
+        
+#        #To test RequestCastingError
+#        r=client.get("/bool/?a=tyyui")
+        
+        #To test default
+        r=client.get("/bool/?not_a=true")
         
     def test_get_date(self):
         client = APIClient()
@@ -123,7 +144,12 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], "2023-01-01")
         self.assertEqual(r.json()["class"], "date")
         
-        
+#        with self.assertRaises(request_casting.RequestCastingError):
+#            r=client.get("/date/?a=baddecimal")        
+            
+        #To test default
+        r=client.get("/date/?not_a=2023-1-1")
+            
         
     def test_get_decimal(self):
         client = APIClient()
@@ -140,6 +166,9 @@ class CtTestCase(APITestCase):
         
         with self.assertRaises(request_casting.RequestCastingError):
             r=client.get("/decimal/?a=baddecimal")        
+
+        #To test default
+        r=client.get("/decimal/?not_a=12.34")
 
     def test_get_dtaware(self):
         client = APIClient()
@@ -182,6 +211,9 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], ["Elvis",  "Presley"])
         self.assertEqual(r.json()["class"], "list")        
         
+        r=client.get("/list/strings/?not_a[]=Elvis&not_a[]=Presley")
+        self.assertEqual(r.json()["a"], None)
+        
     def test_get_list_of_integers(self):
         client = APIClient()
         
@@ -208,6 +240,8 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], 2)
         self.assertEqual(r.json()["class"], "QuerySet")
         
+        r=client.get("/list/urls/?not_a[]=http://localhost:8000/api/record/1/&not_a[]=http://localhost:8000/api/record/2/")
+        self.assertEqual(r.json()["a"], None)
         
     def test_all_args_are_not_none(self):
         r=request_casting.all_args_are_not_none(None, None, None)

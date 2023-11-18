@@ -85,7 +85,7 @@ def RequestInteger(request, field, default=None):
     except:
         raise RequestCastingError(f"Error in RequestInteger with method {request.method}")
 
-def RequestListOfStrings(request, field, default=[]):    
+def RequestListOfStrings(request, field, default=None):    
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -103,7 +103,7 @@ def RequestListOfStrings(request, field, default=[]):
     except:
         raise RequestCastingError(f"Error in RequestListOfStrings with method {request.method}")
 
-def RequestListOfBools(request, field, default=[]):    
+def RequestListOfBools(request, field, default=None):    
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -129,7 +129,6 @@ def RequestListOfIntegers(request, field, default=None,  separator=","):
         
     if not field in dictionary:
         return default
-
 
     try:
         r=[]

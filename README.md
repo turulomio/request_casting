@@ -38,7 +38,7 @@ You'll get this answer in both cases
 {"a":true,"class":"bool"}
 ```
 
-All request_casting methods allow to set a default value. By default this value is None or an empty list in RequestList methods.  This value is returned when cast fails.
+All request_casting methods allow to set a default value. By default this value is None in all Request methods.  This value is returned when cast fails.
 
 ```bash
 curl http://localhost:8000/myview/?a=BADBOOL
