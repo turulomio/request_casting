@@ -225,5 +225,10 @@ Run `poe coverage` to test module.
 
 ## Changelog
 
+### 0.2.0 (2023-11-18)
+- Improving documentation
+- All default values are set to None, including RequestList methods
+- string2dtaware now uses ZoneInfo instead of pytz
+
 ### 0.1.0 (2023-11-15)
 - Converted reusingcode module to an independent module

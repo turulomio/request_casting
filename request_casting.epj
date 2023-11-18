@@ -2,7 +2,7 @@
   "header": {
     "comment": "eric project file for project request_casting",
     "copyright": "Copyright (C) 2023 , ",
-    "saved": "2023-11-15, 11:51:26"
+    "saved": "2023-11-18, 08:05:47"
   },
   "project": {
     "AUTHOR": "",
@@ -82,6 +82,7 @@
       "django_test/testme/admin.py",
       "django_test/testme/apps.py",
       "django_test/testme/management/commands/coverage.py",
+      "django_test/testme/migrations/0001_initial.py",
       "django_test/testme/migrations/__init__.py",
       "django_test/testme/models.py",
       "django_test/testme/serializers.py",
@@ -89,11 +90,7 @@
       "django_test/testme/views.py",
       "request_casting/__init__.py",
       "request_casting/poethepoet.py",
-      "request_casting/request_casting.py",
-      "request_casting/reusing/casts.py",
-      "request_casting/reusing/datetime_functions.py",
-      "request_casting/reusing/file_functions.py",
-      "request_casting/reusing/github.py"
+      "request_casting/request_casting.py"
     ],
     "SOURCESDIR": "",
     "SPELLEXCLUDES": "",
