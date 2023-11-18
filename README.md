@@ -57,7 +57,7 @@ Use this method inside a view to get a casted date. Use dates in Iso format
 
 ```python
     # ... The same as RequestBool example
-    a=request_casting.RequesDate(request, "a")
+    a=request_casting.RequestDate(request, "a")
 ```
 You'll get this answers
 ``` 
@@ -71,7 +71,7 @@ Use this method inside a view to get a casted Decimal
 
 ```python
     # ... The same as RequestBool example
-    a=request_casting.RequesDecimal(request, "a", Decimal(0))
+    a=request_casting.RequestDecimal(request, "a", Decimal(0))
 ```
 You'll get this answers
 ``` 
@@ -84,7 +84,7 @@ Use this method inside a view to get a datetime with timezone. Use dates in Iso 
 
 ```python
     # ... The same as RequestBool example
-    a=request_casting.RequesDtaware(request, "a")
+    a=request_casting.RequestDtaware(request, "a")
 ```
 You'll get this answers
 ``` 
@@ -98,7 +98,7 @@ Use this method inside a view to get a casted Integer
 
 ```python
     # ... The same as RequestBool example
-    a=request_casting.RequetInteger(request, "a")
+    a=request_casting.RequestInteger(request, "a")
 ```
 You'll get this answers
 ``` 
@@ -127,7 +127,7 @@ Use this method inside a view to get a list of Integers
 
 ```python
     # ... The same as RequestBool example
-    a=request_casting.RequesListOfIntegers(request, "a")
+    a=request_casting.RequestListOfIntegers(request, "a")
 ```
 You'll get this answers
 ``` bash
@@ -136,21 +136,92 @@ curl "http://localhost:8000/myview/?a[]=1&a[]=2"   => a will be a list [1,2]
 
 ### RequestListOfStrings
 
+
+Use this method inside a view to get a list of strings
+
+```python
+    # ... The same as RequestBool example
+    a=request_casting.RequestListOfStrings(request, "a")
+```
+You'll get this answers
+``` bash
+curl "http://localhost:8000/myview/?a[]=a&a[]=b"   => a will be a list ["a","b"]
+```
+
+
 ### RequestString
+
+Use this method inside a view to get a casted String
+
+```python
+    # ... The same as RequestBool example
+    a=request_casting.RequestString(request, "a")
+```
+You'll get this answers
+``` 
+curl http://localhost:8000/myview/?a=12 => a will be "12"
+curl http://localhost:8000/myview/?a=BADINTEGER  => a will be "BADINTEGER"
+```
+
 
 ### RequestUrl
 
+Use this method inside a view to get a django model object using its hyperlinked url
+
+```python
+    # ... The same as RequestBool example
+    a=request_casting.RequestUrl(request, "a", models.Record)
+```
+You'll get this answers
+``` bash
+curl "http://localhost:8000/myview/?a=http://localhost:8000/api/record/1/"   => a will be a Record object with pk=1
+```
+
 ### RequestListOfUrls
+
+
+Use this method inside a view to get a list of django model object using its hyperlinked url
+
+```python
+    # ... The same as RequestBool example
+    a=request_casting.RequestListOfUrls(request, "a",models.Record)
+```
+You'll get this answers
+``` bash
+curl "http://localhost:8000/myview/?a[]=http://localhost:8000/api/record/1/&a[]=http://localhost:8000/api/record/2/"   => a will be a list with Record objects with pk=1 and pk=2
+```
+
 
 ## Other usefull functions
 
 ### all_args_are_not_empty
 
+Returns True if all function arguments are different to None and ""
+
+It's very usefull to compare view parameters fast.
+
+```python
+    request_casting.all_args_are_not_empty(None, "", None) #Returns False
+    request_casting.all_args_are_not_empty("", "", "")# Returns False
+    request_casting.all_args_are_not_empty(1, 1, 1) #Return True
+```
+
 ### all_args_are_not_none
+
+
+Returns True if all function arguments are different to None 
+
+It's very usefull to compare view parameters fast.
+
+```python
+    request_casting.all_args_are_not_none(None, "", None) #Returns False
+    request_casting.all_args_are_not_none("", "", "")# Returns True
+    request_casting.all_args_are_not_none(1, 1, 1) #Return True
+```
 
 ## Test module
 
-poe coverage
+Run `poe coverage` to test module.
 
 ## Changelog
 
