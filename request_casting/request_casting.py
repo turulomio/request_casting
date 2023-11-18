@@ -1,12 +1,53 @@
-## THIS IS FILE IS FROM https://github.com/turulomio/reusingcode/python/request_casting.py
-## IF YOU NEED TO UPDATE IT PLEASE MAKE A PULL REQUEST IN THAT PROJECT AND DOWNLOAD FROM IT
-## DO NOT UPDATE IT IN YOUR CODE
+from datetime import datetime,  date, timedelta
+from zoneinfo import ZoneInfo
 from decimal import Decimal
-from request_casting.reusing.casts import str2bool
-from request_casting.reusing.datetime_functions import string2dtaware, string2date
 
 class RequestCastingError(Exception):
     pass
+
+## Converts strings True or False to boolean
+## @param s String
+## @return Boolean
+def string2bool(value):
+    if value=="0" or value.lower()=="false":
+        return False
+    elif value=="1" or value.lower()=="true":
+        return True
+    else:
+        raise RequestCastingError(f"Error in string2bool with value {value} with class {value.__class__}")
+
+def string2date(value):
+    """
+        @param value Must be a string with iso format "2023-11-18"
+    """
+    try:
+            d=value.split("-")
+            return date(int(d[0]), int(d[1]),  int(d[2]))
+    except:
+        raise RequestCastingError(f"Error in string2date with value {value} with class {value.__class__}")
+
+
+def string2dtaware(s, timezone_string=None):
+    """
+        @param s is a datetime isostring UTC Zone
+        @param timezone_string If None returns a datetime aware in UTC zoneinfo, else a datetime aware y timezone_string zoneinfo
+    """
+    s=s.replace("T"," ").replace("Z","")
+    
+    #Gets naive datetime
+    arrPunto=s.split(".")
+    s=arrPunto[0]
+    micro=int(arrPunto[1]) if len(arrPunto)==2 else 0
+    dt_naive=datetime.strptime( s, "%Y-%m-%d %H:%M:%S" )
+    dt_naive=dt_naive+timedelta(microseconds=micro)
+    
+    # Gets aware datetime  
+    dt_aware=dt_naive.replace(tzinfo=ZoneInfo("UTC"))
+#    print(dt_naive, dt_aware, dt_aware.astimezone(ZoneInfo("Europe/Madrid")))
+    if timezone_string is None:
+        return dt_aware
+    else:
+        return dt_aware.astimezone(ZoneInfo(timezone_string))
 
 ## Returns a model object
 def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[]):   
@@ -53,7 +94,7 @@ def RequestBool(request, field, default=None):
     if not field in dictionary:
         return default
     try:
-        return  str2bool(dictionary.get(field))
+        return  string2bool(dictionary.get(field))
     except:
         raise RequestCastingError(f"Error in RequestBool with method {request.method}")
 
@@ -116,7 +157,7 @@ def RequestListOfBools(request, field, default=None):
         r=[]
         items=dictionary.getlist(field)
         for i in items:
-            r.append(str2bool(i))
+            r.append(string2bool(i))
         return r
     except:
         raise RequestCastingError(f"Error in RequestListOfBools with method {request.method}")
@@ -149,7 +190,7 @@ def RequestDtaware(request, field, timezone_string, default=None):
         return default
 
     try:
-        return string2dtaware(dictionary.get(field), "JsUtcIso", timezone_string)
+        return string2dtaware(dictionary.get(field), timezone_string)
     except:
         raise RequestCastingError(f"Error in RequestDtaware with method {request.method}")
 
