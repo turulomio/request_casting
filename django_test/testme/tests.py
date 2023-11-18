@@ -207,3 +207,23 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], 2)
         self.assertEqual(r.json()["class"], "QuerySet")
+        
+        
+    def test_all_args_are_not_none(self):
+        r=request_casting.all_args_are_not_none(None, None, None)
+        self.assertEqual(r, False)
+        r=request_casting.all_args_are_not_none(None, 1, None)
+        self.assertEqual(r, False)
+        r=request_casting.all_args_are_not_none(1, 1, 1)
+        self.assertEqual(r, True)
+        r=request_casting.all_args_are_not_none("", "", "")
+        self.assertEqual(r, True)
+
+    def test_all_args_are_not_empty(self):
+        r=request_casting.all_args_are_not_empty(None, "", None)
+        self.assertEqual(r, False)
+        r=request_casting.all_args_are_not_empty("", "", "")
+        self.assertEqual(r, False)
+        r=request_casting.all_args_are_not_empty(1, 1, 1)
+        self.assertEqual(r, True)
+        
