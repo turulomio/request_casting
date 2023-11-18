@@ -8,13 +8,13 @@ class RequestCastingError(Exception):
 ## Converts strings True or False to boolean
 ## @param s String
 ## @return Boolean
-def str2bool(value):
+def string2bool(value):
     if value=="0" or value.lower()=="false":
         return False
     elif value=="1" or value.lower()=="true":
         return True
     else:
-        raise RequestCastingError(f"Error in str2bool with value {value} with class {value.__class__}")
+        raise RequestCastingError(f"Error in string2bool with value {value} with class {value.__class__}")
 
 def string2date(value):
     """
@@ -94,7 +94,7 @@ def RequestBool(request, field, default=None):
     if not field in dictionary:
         return default
     try:
-        return  str2bool(dictionary.get(field))
+        return  string2bool(dictionary.get(field))
     except:
         raise RequestCastingError(f"Error in RequestBool with method {request.method}")
 
@@ -157,7 +157,7 @@ def RequestListOfBools(request, field, default=None):
         r=[]
         items=dictionary.getlist(field)
         for i in items:
-            r.append(str2bool(i))
+            r.append(string2bool(i))
         return r
     except:
         raise RequestCastingError(f"Error in RequestListOfBools with method {request.method}")
