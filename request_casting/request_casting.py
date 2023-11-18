@@ -1,4 +1,5 @@
-from datetime import datetime,  date, timedelta, timezone
+from datetime import datetime,  date, timedelta
+from zoneinfo import ZoneInfo
 from decimal import Decimal
 
 class RequestCastingError(Exception):
@@ -15,22 +16,6 @@ def str2bool(value):
     else:
         raise RequestCastingError(f"Error in str2bool with value {value} with class {value.__class__}")
 
-
-## Changes zoneinfo from a dtaware object
-## For example:
-## - datetime.datetime(2018, 5, 18, 8, 12, tzinfo=<DstTzInfo 'Europe/Madrid' CEST+2:00:00 DST>)
-## - libcaloriestrackerfunctions.dtaware_changes_tz(a,"Europe/London")
-## - datetime.datetime(2018, 5, 18, 7, 12, tzinfo=<DstTzInfo 'Europe/London' BST+1:00:00 DST>)
-## @param dt datetime aware object
-## @param tzname String with datetime zone. For example: "Europe/Madrid"
-## @return datetime aware object
-def dtaware_changes_tz(dt,  tzname):
-    if dt==None:
-        return None
-    tzt=timezone(tzname)
-    tarjet=tzt.normalize(dt.astimezone(tzt))
-    return tarjet
-
 def string2date(value):
     """
         @param value Must be a string with iso format "2023-11-18"
@@ -41,23 +26,28 @@ def string2date(value):
     except:
         raise RequestCastingError(f"Error in string2date with value {value} with class {value.__class__}")
 
-def string2dtnaive(s, format):
+
+def string2dtaware(s, timezone_string=None):
+    """
+        @param s is a datetime isostring UTC Zone
+        @param timezone_string If None returns a datetime aware in UTC zoneinfo, else a datetime aware y timezone_string zoneinfo
+    """
+    s=s.replace("T"," ").replace("Z","")
+    
+    #Gets naive datetime
     arrPunto=s.split(".")
     s=arrPunto[0]
     micro=int(arrPunto[1]) if len(arrPunto)==2 else 0
-    dt=datetime.strptime( s, "%Y-%m-%d %H:%M:%S" )
-    dt=dt+timedelta(microseconds=micro)
-    return dt
-
-def dtnaive2dtaware(dtnaive, tz_name):
-    z=timezone(tz_name)
-    return z.localize(dtnaive)
-
-def string2dtaware(s, format, tz_name='UTC'):
-        s=s.replace("T"," ").replace("Z","")
-        dtnaive=string2dtnaive(s,"%Y-%m-%d %H:%M:%S.")
-        dtaware_utc=dtnaive2dtaware(dtnaive, 'UTC')
-        return dtaware_changes_tz(dtaware_utc, tz_name)
+    dt_naive=datetime.strptime( s, "%Y-%m-%d %H:%M:%S" )
+    dt_naive=dt_naive+timedelta(microseconds=micro)
+    
+    # Gets aware datetime  
+    dt_aware=dt_naive.replace(tzinfo=ZoneInfo("UTC"))
+#    print(dt_naive, dt_aware, dt_aware.astimezone(ZoneInfo("Europe/Madrid")))
+    if timezone_string is None:
+        return dt_aware
+    else:
+        return dt_aware.astimezone(ZoneInfo(timezone_string))
 
 ## Returns a model object
 def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[]):   
@@ -200,7 +190,7 @@ def RequestDtaware(request, field, timezone_string, default=None):
         return default
 
     try:
-        return string2dtaware(dictionary.get(field), "JsUtcIso", timezone_string)
+        return string2dtaware(dictionary.get(field), timezone_string)
     except:
         raise RequestCastingError(f"Error in RequestDtaware with method {request.method}")
 
