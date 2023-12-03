@@ -170,11 +170,11 @@ Use this method inside a view to get a django model object using its hyperlinked
 
 ```python
     # ... The same as RequestBool example
-    a=request_casting.RequestUrl(request, "a", models.Record)
+    a=request_casting.RequestUrl(request, "a", models.Record, model_url="records")
 ```
 You'll get this answers
 ``` bash
-curl "http://localhost:8000/myview/?a=http://localhost:8000/api/record/1/"   => a will be a Record object with pk=1
+curl "http://localhost:8000/myview/?a=http://localhost:8000/api/records/1/"   => a will be a Record object with pk=1
 ```
 
 ### RequestListOfUrls
@@ -184,11 +184,11 @@ Use this method inside a view to get a list of django model object using its hyp
 
 ```python
     # ... The same as RequestBool example
-    a=request_casting.RequestListOfUrls(request, "a",models.Record)
+    a=request_casting.RequestListOfUrls(request, "a",models.Record, model_url="records")
 ```
 You'll get this answers
 ``` bash
-curl "http://localhost:8000/myview/?a[]=http://localhost:8000/api/record/1/&a[]=http://localhost:8000/api/record/2/"   => a will be a list with Record objects with pk=1 and pk=2
+curl "http://localhost:8000/myview/?a[]=http://localhost:8000/api/records/1/&a[]=http://localhost:8000/api/records/2/"   => a will be a list with Record objects with pk=1 and pk=2
 ```
 
 
