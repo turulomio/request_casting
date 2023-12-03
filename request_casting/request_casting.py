@@ -232,8 +232,7 @@ def parse_from_url(url):
         parts=url.split("/")
         return parts[len(parts)-3], int(parts[len(parts)-2])
     except:
-        print("Error parsing url", url)
-        return None,None
+        raise RequestCastingError("Error parsing url: {0}".format(url))
 
 
 def object_from_url(url, class_, select_related=[], prefetch_related=[], model_url=None):
@@ -254,7 +253,7 @@ def object_from_url(url, class_, select_related=[], prefetch_related=[], model_u
 
     #Validation
     if id_ is None:
-        return None
+        raise RequestCastingError("Error parsing url: {0}".format(url))
 
     if class_.__name__.lower() != model_url.lower().replace("-","").replace("_",""):
         comment=f"url couldn't be validated {url} ==> {class_.__name__} {model_url} {id_}"

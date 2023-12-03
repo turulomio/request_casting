@@ -261,3 +261,12 @@ class CtTestCase(APITestCase):
         r=request_casting.all_args_are_not_empty(1, 1, 1)
         self.assertEqual(r, True)
         
+
+    def test_parse_from_url(self):
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/records/1/"), ("records", 1))
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/1/1/"), ("1", 1))
+        
+        with self.assertRaises(request_casting.RequestCastingError):
+            request_casting.parse_from_url("http://localhost:8000/api/records/rere/")
+
+        
