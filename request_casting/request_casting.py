@@ -50,7 +50,7 @@ def string2dtaware(s, timezone_string=None):
         return dt_aware.astimezone(ZoneInfo(timezone_string))
 
 ## Returns a model object
-def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[]):   
+def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[], model_url=None):   
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -58,10 +58,10 @@ def RequestUrl(request, field, class_,  default=None, select_related=[], prefetc
         
     if not field in dictionary:
         return default
-    return  object_from_url(dictionary.get(field), class_, select_related, prefetch_related)
+    return  object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related)
 
 ## Returns a query_set obect
-def RequestListOfUrls(request, field, class_,  default=None,select_related=[],prefetch_related=[]):
+def RequestListOfUrls(request, field, model_class,   default=None,select_related=[],prefetch_related=[], model_url=None):
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -69,7 +69,7 @@ def RequestListOfUrls(request, field, class_,  default=None,select_related=[],pr
     if not field in dictionary:
         return default
 
-    r=queryset_from_list_of_urls(dictionary.getlist(field), class_, select_related, prefetch_related)
+    r=queryset_from_list_of_urls(dictionary.getlist(field), model_class, model_url, select_related, prefetch_related)
     return r
 
 def RequestDate(request, field, default=None):
@@ -224,7 +224,7 @@ def id_from_url(url):
     except:
         raise RequestCastingError(f"I couldn't get id from this url: {url}")
 
-def parse_from_url(url, model_class, real_string_before_id=None):
+def parse_from_url(url, model_class, model_url=None):
     """
         By default this method validates that url has the name of the class_ in lowercase as model_url
         For example. Products model should contain /products/ in url and then its id
@@ -241,13 +241,13 @@ def parse_from_url(url, model_class, real_string_before_id=None):
         For example https://localhost/api/products/1/ ==> (models.Products, 1)
     """
     def exception():
-        raise RequestCastingError(f"Url ({url}) couldn't be parsed. Model: {model_class.__name__}. Real string before id: {real_string_before_id}")
+        raise RequestCastingError(f"Url ({url}) couldn't be parsed. Model: {model_class.__name__}. Real string before id: {model_url}")
     #########################################
     if url is None:
         exception()
     
-    if real_string_before_id is None:
-        real_string_before_id=model_class.__name__.lower().replace("-","").replace("_","") 
+    if model_url is None:
+        model_url=model_class.__name__.lower().replace("-","").replace("_","") 
 
     try:
         parts=url.split("/")
@@ -256,22 +256,22 @@ def parse_from_url(url, model_class, real_string_before_id=None):
     except:
         exception()
 
-    if url_string_before_id == real_string_before_id :
+    if url_string_before_id == model_url :
         return (model_class, url_id)
     else:
         exception()
 
-def object_from_url(url, model_class, real_string_before_id=None,  select_related=[], prefetch_related=[]):
+def object_from_url(url, model_class, model_url=None,  select_related=[], prefetch_related=[]):
     """
         No exceptions and validations needed due to everything is tested in parse_from_url
     """
-    model, id=parse_from_url(url, model_class, real_string_before_id )
+    model, id=parse_from_url(url, model_class, model_url )
     return model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id_from_url(url))
 
-def queryset_from_list_of_urls(list_, model_class, real_string_before_id=None,  select_related=[], prefetch_related=[]):
+def queryset_from_list_of_urls(list_, model_class, model_url=None,  select_related=[], prefetch_related=[]):
     ids=[]
     for url in list_:
-        model, id=parse_from_url(url, model_class, real_string_before_id)
+        model, id=parse_from_url(url, model_class, model_url)
         ids.append(id)
     return model_class.objects.filter(pk__in=ids).prefetch_related(*prefetch_related).select_related(*select_related)
 

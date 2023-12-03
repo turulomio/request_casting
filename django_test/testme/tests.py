@@ -96,12 +96,12 @@ class CtTestCase(APITestCase):
         
     def test_get_url(self):
         client = APIClient()
-        r=client.get("/url/?a=http://localhost:8000/api/record/1/")
+        r=client.get("/url/?a=http://localhost:8000/api/records/1/")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         assert r.json()["a"].startswith("Record 1")
         self.assertEqual(r.json()["class"], "Record")
         
-        r=client.post("/url/", {"a":"http://localhost:8000/api/record/1/"})
+        r=client.post("/url/", {"a":"http://localhost:8000/api/records/1/"})
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         assert r.json()["a"].startswith("Record 1")
         self.assertEqual(r.json()["class"], "Record")
@@ -109,7 +109,7 @@ class CtTestCase(APITestCase):
         with self.assertRaises(request_casting.RequestCastingError):
             r=client.post("/url/", {"a":"http://localhost:8000/api/notarecord/1/"})
 
-        r=client.get("/url/?not_a=http://localhost:8000/api/record/1/")
+        r=client.get("/url/?not_a=http://localhost:8000/api/records/1/")
         self.assertEqual(r.json()["a"], "None")
 
     def test_get_bool(self):
