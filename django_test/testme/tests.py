@@ -55,6 +55,16 @@ class CtTestCase(APITestCase):
             record.datetime=timezone.now()
             record.user=cls.user2
             record.save()
+            
+            post=models.Posts()
+            post.datetime=timezone.now()
+            post.user=cls.user1
+            post.save()
+            
+            post=models.Posts()
+            post.datetime=timezone.now()
+            post.user=cls.user2
+            post.save()
 
 #        print(models.Record.objects.all())
     
@@ -264,6 +274,9 @@ class CtTestCase(APITestCase):
 
     def test_parse_from_url(self):
         self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/records/1/", models.Record, "records"), (models.Record, 1))
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/records/10/", models.Record, "records"), (models.Record, 10))
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/posts/1/", models.Posts), (models.Posts, 1))
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/posts/1/", models.Posts, "posts"), (models.Posts, 1))
         
         with self.assertRaises(request_casting.RequestCastingError):
             request_casting.parse_from_url("http://localhost:8000/api/1/1/", models.Record)
@@ -273,5 +286,7 @@ class CtTestCase(APITestCase):
             
     def test_object_from_url(self):
         self.assertEqual(request_casting.object_from_url("http://localhost:8000/api/records/1/", models.Record, "records").__class__, models.Record)
+        self.assertEqual(request_casting.object_from_url("http://localhost:8000/api/records/1/", models.Record, "records").id, 1)
+        self.assertEqual(request_casting.object_from_url("http://localhost:8000/api/records/10/", models.Record, "records").id, 10)
         
  

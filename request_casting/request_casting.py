@@ -266,7 +266,7 @@ def object_from_url(url, model_class, model_url=None,  select_related=[], prefet
         No exceptions and validations needed due to everything is tested in parse_from_url
     """
     model, id=parse_from_url(url, model_class, model_url )
-    return model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id_from_url(url))
+    return model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id)
 
 def queryset_from_list_of_urls(list_, model_class, model_url=None,  select_related=[], prefetch_related=[]):
     ids=[]
