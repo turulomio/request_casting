@@ -7,14 +7,14 @@ license = "GPL-3.0 license"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.8,<4.0"
 
 [tool.poetry.group.dev.dependencies]
-poetry = "^1.5.1"
-poethepoet = "^0.22.0"
-django = "^4.2.7"
-djangorestframework = "^3.14.0"
-coverage = "^7.3.2"
+poetry = ">=1.5.1"
+poethepoet = ">=0.22.0"
+django = ">=4.2.7"
+djangorestframework = ">=3.14.0"
+coverage = ">=7.3.2"
 
 [build-system]
 requires = ["poetry-core"]
