@@ -3,8 +3,8 @@ from testme import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-routers.DefaultRouter
 router.register(r'records', views.RecordViewSet)
+router.register(r'posts', views.RecordViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),

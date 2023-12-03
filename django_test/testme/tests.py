@@ -55,6 +55,16 @@ class CtTestCase(APITestCase):
             record.datetime=timezone.now()
             record.user=cls.user2
             record.save()
+            
+            post=models.Posts()
+            post.datetime=timezone.now()
+            post.user=cls.user1
+            post.save()
+            
+            post=models.Posts()
+            post.datetime=timezone.now()
+            post.user=cls.user2
+            post.save()
 
 #        print(models.Record.objects.all())
     
@@ -96,12 +106,12 @@ class CtTestCase(APITestCase):
         
     def test_get_url(self):
         client = APIClient()
-        r=client.get("/url/?a=http://localhost:8000/api/record/1/")
+        r=client.get("/url/?a=http://localhost:8000/api/records/1/")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         assert r.json()["a"].startswith("Record 1")
         self.assertEqual(r.json()["class"], "Record")
         
-        r=client.post("/url/", {"a":"http://localhost:8000/api/record/1/"})
+        r=client.post("/url/", {"a":"http://localhost:8000/api/records/1/"})
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         assert r.json()["a"].startswith("Record 1")
         self.assertEqual(r.json()["class"], "Record")
@@ -109,7 +119,7 @@ class CtTestCase(APITestCase):
         with self.assertRaises(request_casting.RequestCastingError):
             r=client.post("/url/", {"a":"http://localhost:8000/api/notarecord/1/"})
 
-        r=client.get("/url/?not_a=http://localhost:8000/api/record/1/")
+        r=client.get("/url/?not_a=http://localhost:8000/api/records/1/")
         self.assertEqual(r.json()["a"], "None")
 
     def test_get_bool(self):
@@ -261,3 +271,23 @@ class CtTestCase(APITestCase):
         r=request_casting.all_args_are_not_empty(1, 1, 1)
         self.assertEqual(r, True)
         
+
+    def test_parse_from_url(self):
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/records/1/", models.Record, "records"), (models.Record, 1))
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/records/100/", models.Record, "records"), (models.Record, 100))
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/posts/1/", models.Posts), (models.Posts, 1))
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/posts/1/", models.Posts, "posts"), (models.Posts, 1))
+        
+        with self.assertRaises(request_casting.RequestCastingError):
+            request_casting.parse_from_url("http://localhost:8000/api/1/1/", models.Record)
+        
+        with self.assertRaises(request_casting.RequestCastingError):
+            request_casting.parse_from_url("http://localhost:8000/api/records/rere/", models.Record)
+            
+    def test_object_from_url(self):
+        self.assertEqual(request_casting.object_from_url("http://localhost:8000/api/records/1/", models.Record, "records").__class__, models.Record)
+        self.assertEqual(request_casting.object_from_url("http://localhost:8000/api/records/1/", models.Record, "records").id, 1)
+        with self.assertRaises(models.Posts.DoesNotExist):#No existe este id
+            request_casting.object_from_url("http://localhost:8000/api/posts/100/", models.Posts)
+        
+ 

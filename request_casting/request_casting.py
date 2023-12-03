@@ -50,7 +50,7 @@ def string2dtaware(s, timezone_string=None):
         return dt_aware.astimezone(ZoneInfo(timezone_string))
 
 ## Returns a model object
-def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[]):   
+def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[], model_url=None):   
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -58,10 +58,10 @@ def RequestUrl(request, field, class_,  default=None, select_related=[], prefetc
         
     if not field in dictionary:
         return default
-    return  object_from_url(dictionary.get(field), class_, select_related, prefetch_related)
+    return  object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related)
 
 ## Returns a query_set obect
-def RequestListOfUrls(request, field, class_,  default=None,select_related=[],prefetch_related=[]):
+def RequestListOfUrls(request, field, model_class,   default=None,select_related=[],prefetch_related=[], model_url=None):
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -69,7 +69,7 @@ def RequestListOfUrls(request, field, class_,  default=None,select_related=[],pr
     if not field in dictionary:
         return default
 
-    r=queryset_from_list_of_urls(dictionary.getlist(field), class_, select_related, prefetch_related)
+    r=queryset_from_list_of_urls(dictionary.getlist(field), model_class, model_url, select_related, prefetch_related)
     return r
 
 def RequestDate(request, field, default=None):
@@ -218,54 +218,62 @@ def ids_from_list_of_urls(list_):
 def id_from_url(url):
     if url is None:
         return None
-    parts=url.split("/")
-    return int(parts[len(parts)-2])
-
-def parse_from_url(url):
-    """
-        Returns a tuple (model_url and id) from a django hyperlinked url
-        For example https://localhost/api/products/1/ ==> ('products', 1)
-    """
-    if url is None:
-        return None,None
     try:
         parts=url.split("/")
-        return parts[len(parts)-3], int(parts[len(parts)-2])
+        return int(parts[len(parts)-2])
     except:
-        print("Error parsing url", url)
-        return None,None
+        raise RequestCastingError(f"I couldn't get id from this url: {url}")
 
-
-def object_from_url(url, class_, select_related=[], prefetch_related=[], model_url=None):
+def parse_from_url(url, model_class, model_url=None):
     """
         By default this method validates that url has the name of the class_ in lowercase as model_url
         For example. Products model should contain /products/ in url and then its id
                      ProductsMine should contain /productsmain/ or /products_main/ or /products-main/
         If your url is not in the ones before, you can use model_url to pass your own url to validate
         If we woudn't validate a param could pass other model with the same id and give wrong results
+        
+        Parameters:
+            - class_: Class of the model we want to get. For example. models.Record
+            - model_url -> str: String with the string before the id, without the slashes http://localhost/api/records/1/ -> records
+            
+        You don't need to pass model_url if models.__class__name.lower.replace("_").replace("-") == string before the id
+        Returns a tuple (class_model, and id) from a django hyperlinked url
+        For example https://localhost/api/products/1/ ==> (models.Products, 1)
     """
+    def exception():
+        raise RequestCastingError(f"Url ({url}) couldn't be parsed. Model: {model_class.__name__}. Real string before id: {model_url}")
+    #########################################
     if url is None:
-        return None
-    # Get id and model_url
+        exception()
+    
     if model_url is None:
-        model_url, id_=parse_from_url(url)
+        model_url=model_class.__name__.lower().replace("-","").replace("_","") 
+
+    try:
+        parts=url.split("/")
+        url_string_before_id=parts[len(parts)-3].lower().replace("-","").replace("_","")
+        url_id= int(parts[len(parts)-2])
+    except:
+        exception()
+
+    if url_string_before_id == model_url :
+        return (model_class, url_id)
     else:
-        id_=id_from_url(url)
+        exception()
 
-    #Validation
-    if id_ is None:
-        return None
+def object_from_url(url, model_class, model_url=None,  select_related=[], prefetch_related=[]):
+    """
+        No exceptions and validations needed due to everything is tested in parse_from_url
+    """
+    model, id=parse_from_url(url, model_class, model_url )
+    return model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id)
 
-    if class_.__name__.lower() != model_url.lower().replace("-","").replace("_",""):
-        comment=f"url couldn't be validated {url} ==> {class_.__name__} {model_url} {id_}"
-        raise RequestCastingError(comment)
-
-    #Get result
-    return class_.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id_from_url(url))
-
-def queryset_from_list_of_urls(list_, class_, select_related=[], prefetch_related=[]):
-    ids=ids_from_list_of_urls(list_)
-    return class_.objects.filter(pk__in=ids).prefetch_related(*prefetch_related).select_related(*select_related)
+def queryset_from_list_of_urls(list_, model_class, model_url=None,  select_related=[], prefetch_related=[]):
+    ids=[]
+    for url in list_:
+        model, id=parse_from_url(url, model_class, model_url)
+        ids.append(id)
+    return model_class.objects.filter(pk__in=ids).prefetch_related(*prefetch_related).select_related(*select_related)
 
 ## Returns false if some arg is None
 def all_args_are_not_none(*args):
