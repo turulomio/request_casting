@@ -194,10 +194,6 @@ def id_from_url(url):
 
 def parse_from_url(url, model_class, model_url=None):
     """
-        By default this method validates that url has the name of the class_ in lowercase as model_url
-        For example. Products model should contain /products/ in url and then its id
-                     ProductsMine should contain /productsmain/ or /products_main/ or /products-main/
-        If your url is not in the ones before, you can use model_url to pass your own url to validate
         If we woudn't validate a param could pass other model with the same id and give wrong results
         
         Parameters:
