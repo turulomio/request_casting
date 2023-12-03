@@ -255,7 +255,7 @@ def object_from_url(url, class_, select_related=[], prefetch_related=[], model_u
     if id_ is None:
         raise RequestCastingError("Error parsing url: {0}".format(url))
 
-    if class_.__name__.lower() != model_url.lower().replace("-","").replace("_",""):
+    if class_.__name__.lower().replace("-","").replace("_","") != model_url.lower().replace("-","").replace("_",""):
         comment=f"url couldn't be validated {url} ==> {class_.__name__} {model_url} {id_}"
         raise RequestCastingError(comment)
 
@@ -279,3 +279,27 @@ def all_args_are_not_empty(*args):
         if arg is None or arg=="":
             return False
     return True
+
+#
+#def map_models_urls():
+##    from django.apps import apps
+##    from django.urls import reverse
+#    r={}
+##    for model in apps.get_models():
+##        name = model.__name__
+##        if name in ["LogEntry", "Permission", "Group", "User", "ContentType", "Session"]:
+##            continue
+##        r[name]=reverse(f'{name.lower()}_detail')
+##        count = model.objects.all().count()
+##        print("{} rows: {}".format(name, count))
+#            
+#    from rest_framework import routers
+#
+#    router = routers.DefaultRouter()
+#    print(router)
+#    print(dir(router))
+#    print(router.get_urls())
+#    print("Registry", router.registry)
+#    print(router.routes)
+#    print(router.urls)
+#    print(r)
