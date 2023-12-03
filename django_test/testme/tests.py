@@ -263,18 +263,15 @@ class CtTestCase(APITestCase):
         
 
     def test_parse_from_url(self):
-        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/records/1/"), ("records", 1))
-        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/1/1/"), ("1", 1))
+        self.assertEqual(request_casting.parse_from_url("http://localhost:8000/api/records/1/", models.Record, "records"), (models.Record, 1))
         
         with self.assertRaises(request_casting.RequestCastingError):
-            request_casting.parse_from_url("http://localhost:8000/api/records/rere/")
+            request_casting.parse_from_url("http://localhost:8000/api/1/1/", models.Record)
+        
+        with self.assertRaises(request_casting.RequestCastingError):
+            request_casting.parse_from_url("http://localhost:8000/api/records/rere/", models.Record)
             
     def test_object_from_url(self):
-        self.assertEqual(request_casting.object_from_url("http://localhost:8000/api/records/1/", models.Record, model_url="records").__class__, models.Record)
+        self.assertEqual(request_casting.object_from_url("http://localhost:8000/api/records/1/", models.Record, "records").__class__, models.Record)
         
-        #, class_, select_related=[], prefetch_related=[], model_url=None):
-
-#    def test_map_model_urls(self):
-#        request_casting.map_models_urls()
-#        assert False
-        
+ 

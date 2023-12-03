@@ -218,53 +218,62 @@ def ids_from_list_of_urls(list_):
 def id_from_url(url):
     if url is None:
         return None
-    parts=url.split("/")
-    return int(parts[len(parts)-2])
-
-def parse_from_url(url):
-    """
-        Returns a tuple (model_url and id) from a django hyperlinked url
-        For example https://localhost/api/products/1/ ==> ('products', 1)
-    """
-    if url is None:
-        return None,None
     try:
         parts=url.split("/")
-        return parts[len(parts)-3], int(parts[len(parts)-2])
+        return int(parts[len(parts)-2])
     except:
-        raise RequestCastingError("Error parsing url: {0}".format(url))
+        raise RequestCastingError(f"I couldn't get id from this url: {url}")
 
-
-def object_from_url(url, class_, select_related=[], prefetch_related=[], model_url=None):
+def parse_from_url(url, model_class, real_string_before_id=None):
     """
         By default this method validates that url has the name of the class_ in lowercase as model_url
         For example. Products model should contain /products/ in url and then its id
                      ProductsMine should contain /productsmain/ or /products_main/ or /products-main/
         If your url is not in the ones before, you can use model_url to pass your own url to validate
         If we woudn't validate a param could pass other model with the same id and give wrong results
+        
+        Parameters:
+            - class_: Class of the model we want to get. For example. models.Record
+            - model_url -> str: String with the string before the id, without the slashes http://localhost/api/records/1/ -> records
+            
+        You don't need to pass model_url if models.__class__name.lower.replace("_").replace("-") == string before the id
+        Returns a tuple (class_model, and id) from a django hyperlinked url
+        For example https://localhost/api/products/1/ ==> (models.Products, 1)
     """
+    def exception():
+        raise RequestCastingError(f"Url ({url}) couldn't be parsed. Model: {model_class.__name__}. Real string before id: {real_string_before_id}")
+    #########################################
     if url is None:
-        return None
-    # Get id and model_url
-    if model_url is None:
-        model_url, id_=parse_from_url(url)
+        exception()
+    
+    if real_string_before_id is None:
+        real_string_before_id=model_class.__name__.lower().replace("-","").replace("_","") 
+
+    try:
+        parts=url.split("/")
+        url_string_before_id=parts[len(parts)-3].lower().replace("-","").replace("_","")
+        url_id= int(parts[len(parts)-2])
+    except:
+        exception()
+
+    if url_string_before_id == real_string_before_id :
+        return (model_class, url_id)
     else:
-        id_=id_from_url(url)
+        exception()
 
-    #Validation
-    if id_ is None:
-        raise RequestCastingError("Error parsing url: {0}".format(url))
+def object_from_url(url, model_class, real_string_before_id=None,  select_related=[], prefetch_related=[]):
+    """
+        No exceptions and validations needed due to everything is tested in parse_from_url
+    """
+    model, id=parse_from_url(url, model_class, real_string_before_id )
+    return model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id_from_url(url))
 
-    if class_.__name__.lower().replace("-","").replace("_","") != model_url.lower().replace("-","").replace("_",""):
-        comment=f"url couldn't be validated {url} ==> {class_.__name__} {model_url} {id_}"
-        raise RequestCastingError(comment)
-
-    #Get result
-    return class_.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id_from_url(url))
-
-def queryset_from_list_of_urls(list_, class_, select_related=[], prefetch_related=[]):
-    ids=ids_from_list_of_urls(list_)
-    return class_.objects.filter(pk__in=ids).prefetch_related(*prefetch_related).select_related(*select_related)
+def queryset_from_list_of_urls(list_, model_class, real_string_before_id=None,  select_related=[], prefetch_related=[]):
+    ids=[]
+    for url in list_:
+        model, id=parse_from_url(url, model_class, real_string_before_id)
+        ids.append(id)
+    return model_class.objects.filter(pk__in=ids).prefetch_related(*prefetch_related).select_related(*select_related)
 
 ## Returns false if some arg is None
 def all_args_are_not_none(*args):
@@ -279,27 +288,3 @@ def all_args_are_not_empty(*args):
         if arg is None or arg=="":
             return False
     return True
-
-#
-#def map_models_urls():
-##    from django.apps import apps
-##    from django.urls import reverse
-#    r={}
-##    for model in apps.get_models():
-##        name = model.__name__
-##        if name in ["LogEntry", "Permission", "Group", "User", "ContentType", "Session"]:
-##            continue
-##        r[name]=reverse(f'{name.lower()}_detail')
-##        count = model.objects.all().count()
-##        print("{} rows: {}".format(name, count))
-#            
-#    from rest_framework import routers
-#
-#    router = routers.DefaultRouter()
-#    print(router)
-#    print(dir(router))
-#    print(router.get_urls())
-#    print("Registry", router.registry)
-#    print(router.routes)
-#    print(router.urls)
-#    print(r)
