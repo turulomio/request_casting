@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import  status, viewsets
 from testme import models, serializers
+from django.contrib.auth.models import User
 
 class RecordViewSet(viewsets.ModelViewSet):
     queryset = models.Record.objects.all()
@@ -76,8 +77,8 @@ def list_of_urls(request):
     
 @api_view(['GET', 'POST'])
 def url(request):
-    a=request_casting.RequestUrl(request, "a", models.Record, model_url="records")
-    return Response({"a": str(a),  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)     
+    a=request_casting.RequestUrl(request, "a", models.Record, model_url="records", validate_object=lambda o: o.user==User.objects.get(pk=1))
+    return Response({"a": str(a),  "class": a.__class__.__name__}, status=status.HTTP_200_OK)     
     
 
     

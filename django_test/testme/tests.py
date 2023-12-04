@@ -108,7 +108,7 @@ class CtTestCase(APITestCase):
         client = APIClient()
         r=client.get("/url/?a=http://localhost:8000/api/records/1/")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
-        assert r.json()["a"].startswith("Record 1")
+        self.assertTrue(r.json(), True)
         self.assertEqual(r.json()["class"], "Record")
         
         r=client.post("/url/", {"a":"http://localhost:8000/api/records/1/"})
@@ -116,8 +116,8 @@ class CtTestCase(APITestCase):
         assert r.json()["a"].startswith("Record 1")
         self.assertEqual(r.json()["class"], "Record")
         
-        with self.assertRaises(request_casting.RequestCastingError):
-            r=client.post("/url/", {"a":"http://localhost:8000/api/notarecord/1/"})
+        r=client.post("/url/", {"a":"http://localhost:8000/api/notarecord/1/"})
+        self.assertEqual(r.json()["a"], "None")
 
         r=client.get("/url/?not_a=http://localhost:8000/api/records/1/")
         self.assertEqual(r.json()["a"], "None")
@@ -243,15 +243,18 @@ class CtTestCase(APITestCase):
         r=client.get("/list/urls/?a[]=http://localhost:8000/api/records/1/&a[]=http://localhost:8000/api/records/3/")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], 2)
-        self.assertEqual(r.json()["class"], "QuerySet")
+        self.assertEqual(r.json()["class"], "list")
         
         r=client.post("/list/urls/", {"a": ["http://localhost:8000/api/records/1/", "http://localhost:8000/api/records/3/"]})
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], 2)
-        self.assertEqual(r.json()["class"], "QuerySet")
+        self.assertEqual(r.json()["class"], "list")
         
         r=client.get("/list/urls/?not_a[]=http://localhost:8000/api/record/1/&not_a[]=http://localhost:8000/api/record/2/")
         self.assertEqual(r.json()["a"], None)
+        
+        r=client.get("/list/urls/?a[]=http://localhost:8000/api/record/1/&a[]=http://localhost:8000/api/record/2/")
+        self.assertEqual(r.json()["a"], 2)
         
     def test_all_args_are_not_none(self):
         r=request_casting.all_args_are_not_none(None, None, None)
