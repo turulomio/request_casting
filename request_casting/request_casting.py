@@ -14,11 +14,15 @@ class RequestCastingError(Exception):
     pass
 
 
-def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[], model_url=None):   
+def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[], model_url=None, validate_object=None):   
     """
         Returns an object of the model in class_ after parse url and validate with model_url
         
         Returns default if Can't be got
+        
+        Parameters:
+            - validate_object: callable (function or lambda) that returns a boolean to validate got object. For example if object belongs to request.user
+        
     """
     if request.method=="GET":
         dictionary=request.GET
@@ -27,17 +31,26 @@ def RequestUrl(request, field, class_,  default=None, select_related=[], prefetc
         
     if not field in dictionary:
         return default
+    
     try:
-        return  object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related)
+        o=object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related)
     except:
-        None
+        return None
+        
+    if validate_object is not None and o is not None and validate_object(o)==True:
+        return o
+    else:
+        return None
 
 ## Returns a query_set obect
-def RequestListOfUrls(request, field, model_class,   default=None,select_related=[],prefetch_related=[], model_url=None):
+def RequestListOfUrls(request, field, model_class,   default=None,select_related=[],prefetch_related=[], model_url=None, validate_object=None):
     """
         This method try to parse get or post parameters. So is not for get a big amount of urls. So This method will no use querysets
         
-        It will use RequestUrl. If some object can't be obtained, It will give None in its position
+        It will use RequestUrl. If some object can't be obtained, It will give None in its position        
+        
+        Parameters:
+            - validate_object: callable (function or lambda) that returns a boolean to validate got object. For example if object belongs to request.user    
     """
     if request.method=="GET":
         dictionary=request.GET
@@ -47,7 +60,7 @@ def RequestListOfUrls(request, field, model_class,   default=None,select_related
         return default
     r=[]
     for url in  dictionary.getlist(field):
-        r.append(RequestUrl(request, field, model_class, default, select_related, prefetch_related, model_url))
+        r.append(RequestUrl(request, field, model_class, default, select_related, prefetch_related, model_url, validate_object))
     return r
 
 def RequestDate(request, field, default=None):
