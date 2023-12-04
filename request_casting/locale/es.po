@@ -25,7 +25,7 @@ msgstr "Error en RequestDate con método {0}"
 
 #, python-brace-format
 msgid "Error in RequestBool with method {0}"
-msgstr ""
+msgstr "Error en RequestBool con método {0}"
 
 #, python-brace-format
 msgid "Error in RequestDecimal with method {0}"
@@ -57,11 +57,8 @@ msgstr ""
 
 #, python-brace-format
 msgid "I couldn't get id from this url: {0}"
-msgstr ""
+msgstr "No pude conseguir el id de esta url: {0}"
 
 #, python-brace-format
 msgid "Url ({0}) couldn't be parsed. Model: {1}. Real string before id: {2}"
 msgstr ""
-
-#~ msgid "Developed by Mariano Muñoz 2020-{}"
-#~ msgstr "Desarrollado por Mariano Muñoz 2021-{}"
