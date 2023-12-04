@@ -253,6 +253,9 @@ class CtTestCase(APITestCase):
         r=client.get("/list/urls/?not_a[]=http://localhost:8000/api/record/1/&not_a[]=http://localhost:8000/api/record/2/")
         self.assertEqual(r.json()["a"], None)
         
+        r=client.get("/list/urls/?a[]=http://localhost:8000/api/record/1/&a[]=http://localhost:8000/api/record/2/")
+        self.assertEqual(r.json()["a"], 2)
+        
     def test_all_args_are_not_none(self):
         r=request_casting.all_args_are_not_none(None, None, None)
         self.assertEqual(r, False)
