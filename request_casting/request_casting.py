@@ -14,9 +14,12 @@ class RequestCastingError(Exception):
     pass
 
 
-
-## Returns a model object
 def RequestUrl(request, field, class_,  default=None, select_related=[], prefetch_related=[], model_url=None):   
+    """
+        Returns an object of the model in class_ after parse url and validate with model_url
+        
+        Returns default if Can't be got
+    """
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -24,18 +27,27 @@ def RequestUrl(request, field, class_,  default=None, select_related=[], prefetc
         
     if not field in dictionary:
         return default
-    return  object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related)
+    try:
+        return  object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related)
+    except:
+        None
 
 ## Returns a query_set obect
 def RequestListOfUrls(request, field, model_class,   default=None,select_related=[],prefetch_related=[], model_url=None):
+    """
+        This method try to parse get or post parameters. So is not for get a big amount of urls. So This method will no use querysets
+        
+        It will use RequestUrl. If some object can't be obtained, It will give None in its position
+    """
     if request.method=="GET":
         dictionary=request.GET
     else:
         dictionary=request.data
     if not field in dictionary:
         return default
-
-    r=queryset_from_list_of_urls(dictionary.getlist(field), model_class, model_url, select_related, prefetch_related)
+    r=[]
+    for url in  dictionary.getlist(field):
+        r.append(RequestUrl(request, field, model_class, default, select_related, prefetch_related, model_url))
     return r
 
 def RequestDate(request, field, default=None):
@@ -231,13 +243,6 @@ def object_from_url(url, model_class, model_url=None,  select_related=[], prefet
     """
     model, id=parse_from_url(url, model_class, model_url )
     return model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id)
-
-def queryset_from_list_of_urls(list_, model_class, model_url=None,  select_related=[], prefetch_related=[]):
-    ids=[]
-    for url in list_:
-        model, id=parse_from_url(url, model_class, model_url)
-        ids.append(id)
-    return model_class.objects.filter(pk__in=ids).prefetch_related(*prefetch_related).select_related(*select_related)
 
 ## Returns false if some arg is None
 def all_args_are_not_none(*args):
