@@ -2,7 +2,7 @@
   "header": {
     "comment": "eric project file for project request_casting",
     "copyright": "Copyright (C) 2023 , ",
-    "saved": "2023-11-18, 08:05:47"
+    "saved": "2023-12-04, 12:50:30"
   },
   "project": {
     "AUTHOR": "",
@@ -83,6 +83,7 @@
       "django_test/testme/apps.py",
       "django_test/testme/management/commands/coverage.py",
       "django_test/testme/migrations/0001_initial.py",
+      "django_test/testme/migrations/0002_posts.py",
       "django_test/testme/migrations/__init__.py",
       "django_test/testme/models.py",
       "django_test/testme/serializers.py",

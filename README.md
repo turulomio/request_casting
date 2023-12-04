@@ -225,6 +225,11 @@ Run `poe coverage` to test module.
 
 ## Changelog
 
+### 0.3.0 (2023-12-04)
+- Improved parse_from_url and object_from_url validations
+- Added validate_object to RequestUrl and RequestListOfUrls to validate returned objects
+- Added gettext support
+
 ### 0.2.0 (2023-11-18)
 - Improving documentation
 - All default values are set to None, including RequestList methods
