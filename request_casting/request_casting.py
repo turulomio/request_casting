@@ -20,8 +20,6 @@ def RequestUrl(request, field, class_,  default=None, select_related=[], prefetc
         
         Returns default if Can't be got
         
-        Parameters:
-            - validate_object: callable (function or lambda) that returns a boolean to validate got object. For example if object belongs to request.user
         
     """
     if request.method=="GET":
@@ -33,14 +31,10 @@ def RequestUrl(request, field, class_,  default=None, select_related=[], prefetc
         return default
     
     try:
-        o=object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related)
+        return object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related, validate_object)
     except:
         return None
-        
-    if validate_object is not None and o is not None and validate_object(o)==True:
-        return o
-    else:
-        return None
+
 
 ## Returns a query_set obect
 def RequestListOfUrls(request, field, model_class,   default=None,select_related=[],prefetch_related=[], model_url=None, validate_object=None):
@@ -56,11 +50,24 @@ def RequestListOfUrls(request, field, model_class,   default=None,select_related
         dictionary=request.GET
     else:
         dictionary=request.data
+
     if not field in dictionary:
         return default
+        
     r=[]
-    for url in  dictionary.getlist(field):
-        r.append(RequestUrl(request, field, model_class, default, select_related, prefetch_related, model_url, validate_object))
+    if dictionary.__class__==dict:
+        for value in dictionary[field]:
+            try:
+                r.append(object_from_url(value, model_class, model_url, select_related, prefetch_related, validate_object))
+            except:
+                r.append(None)
+    else:#Querydict
+        items=dictionary.getlist(field, [])
+        for value in items:
+            try:
+                r.append(object_from_url(value, model_class, model_url, select_related, prefetch_related, validate_object))
+            except:
+                r.append(None)
     return r
 
 def RequestDate(request, field, default=None):
@@ -267,12 +274,22 @@ def parse_from_url(url, model_class, model_url=None):
     else:
         exception()
 
-def object_from_url(url, model_class, model_url=None,  select_related=[], prefetch_related=[]):
+def object_from_url(url, model_class, model_url=None,  select_related=[], prefetch_related=[], validate_object=None):
     """
         No exceptions and validations needed due to everything is tested in parse_from_url
+        Parameters:
+            - validate_object: callable (function or lambda) that returns a boolean to validate got object. For example if object belongs to request.user
     """
     model, id=parse_from_url(url, model_class, model_url )
-    return model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id)
+    o=model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id)
+            
+    if validate_object is None:
+        return o
+    else:#Needs object validation
+        if o is not None and validate_object(o)==True:
+            return o
+        else:
+            return None
 
 ## Returns false if some arg is None
 def all_args_are_not_none(*args):

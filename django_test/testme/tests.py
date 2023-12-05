@@ -280,6 +280,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], 2)
         self.assertEqual(r.json()["class"], "list")
         
+        r=client.get("/list/urls/?a[]=http://localhost:8000/api/records/1/&a[]=http://localhost:8000/api/records/3/", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 2)
+        self.assertEqual(r.json()["class"], "list")
+        
+        r=client.post("/list/urls/", {"a": ["http://localhost:8000/api/records/1/", "http://localhost:8000/api/records/3/"]}, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 2)
+        self.assertEqual(r.json()["class"], "list")
+        
         r=client.get("/list/urls/?not_a[]=http://localhost:8000/api/record/1/&not_a[]=http://localhost:8000/api/record/2/")
         self.assertEqual(r.json()["a"], None)
         
