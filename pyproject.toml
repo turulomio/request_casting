@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "request_casting"
-version = "0.3.0"
+version = "0.4.0"
 description = "Provide method to cast django request data for POST and GET methods"
 authors = ["turulomio <turulomio@yahoo.es>"]
 license = "GPL-3.0 license"
@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">3.8,<4.0"
-pydicts = "^0.8.0"
+pydicts = ">=0.9.0"
 
 [tool.poetry.group.dev.dependencies]
 poetry = ">=1.5.1"

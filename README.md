@@ -225,6 +225,9 @@ Run `poe coverage` to test module.
 
 ## Changelog
 
+### 0.4.0 (2023-12-05)
+- Migrated to pydicts-0.9.0
+
 ### 0.3.0 (2023-12-04)
 - Improved parse_from_url and object_from_url validations
 - Added validate_object to RequestUrl and RequestListOfUrls to validate returned objects

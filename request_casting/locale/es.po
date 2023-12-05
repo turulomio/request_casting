@@ -29,7 +29,7 @@ msgstr "Error en RequestBool con método {0}"
 
 #, python-brace-format
 msgid "Error in RequestDecimal with method {0}"
-msgstr ""
+msgstr "Error en RequestDecimal con método {0}"
 
 #, python-brace-format
 msgid "Error in RequestInteger with method {0}"
