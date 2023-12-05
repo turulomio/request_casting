@@ -229,6 +229,16 @@ class CtTestCase(APITestCase):
         r=client.post("/list/strings/", {"a":["Elvis", "Presley"], })
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], ["Elvis",  "Presley"])
+        self.assertEqual(r.json()["class"], "list")       
+        
+        r=client.get("/list/strings/?a[]=Elvis&a[]=Presley", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], ["Elvis", "Presley"])
+        self.assertEqual(r.json()["class"], "list")
+    
+        r=client.post("/list/strings/", {"a":["Elvis", "Presley"], }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], ["Elvis",  "Presley"])
         self.assertEqual(r.json()["class"], "list")        
         
         r=client.get("/list/strings/?not_a[]=Elvis&not_a[]=Presley")

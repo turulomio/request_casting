@@ -128,9 +128,13 @@ def RequestListOfStrings(request, field, default=None):
 
     try:
         r=[]
-        items=dictionary.getlist(field, [])
-        for i in items:
-            r.append(str(i))
+        if dictionary.__class__==dict:
+            for value in dictionary[field]:
+                r.append(str(value))
+        else:#Querydict
+            items=dictionary.getlist(field, [])
+            for i in items:
+                r.append(str(i))
         return r
     except:
         raise RequestCastingError(_("Error in RequestListOfStrings with method {0}").format(request.method))
