@@ -135,6 +135,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], True)
         self.assertEqual(r.json()["class"], "bool")
         
+        r=client.get("/bool/?a=true", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], True)
+        self.assertEqual(r.json()["class"], "bool")
+    
+        r=client.post("/bool/",  {"a": True, }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], True)
+        self.assertEqual(r.json()["class"], "bool")
+        
 #        #To test RequestCastingError
 #        r=client.get("/bool/?a=tyyui")
         

@@ -92,7 +92,10 @@ def RequestBool(request, field, default=None):
     if not field in dictionary:
         return default
     try:
-        return  casts.str2bool(dictionary.get(field))
+        if dictionary.__class__==dict:
+            return bool(dictionary.get(field))
+        else:#Querydict
+            return  casts.str2bool(dictionary.get(field))
     except:
         raise RequestCastingError(_("Error in RequestBool with method {0}").format(request.method))
 
