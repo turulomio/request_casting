@@ -81,6 +81,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], 1)
         self.assertEqual(r.json()["class"], "int")
         
+        r=client.get("/integer/?a=1", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 1)
+        self.assertEqual(r.json()["class"], "int")
+    
+        r=client.post("/integer/",  {"a":1, }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 1)
+        self.assertEqual(r.json()["class"], "int")
+        
                 
         with self.assertRaises(request_casting.RequestCastingError):
             r=client.get("/integer/?a=badinteger")        
@@ -101,6 +111,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], "hi")
         self.assertEqual(r.json()["class"], "str")
         
+        r=client.get("/string/?a=hi", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "hi")
+        self.assertEqual(r.json()["class"], "str")
+    
+        r=client.post("/string/",  {"a":"hi", }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "hi")
+        self.assertEqual(r.json()["class"], "str")
+        
         #To test default
         r=client.get("/string/?not_a=12")
         
@@ -112,6 +132,17 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["class"], "Record")
         
         r=client.post("/url/", {"a":"http://localhost:8000/api/records/1/"})
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        assert r.json()["a"].startswith("Record 1")
+        self.assertEqual(r.json()["class"], "Record")
+        
+        client = APIClient()
+        r=client.get("/url/?a=http://localhost:8000/api/records/1/", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertTrue(r.json(), True)
+        self.assertEqual(r.json()["class"], "Record")
+        
+        r=client.post("/url/", {"a":"http://localhost:8000/api/records/1/"}, format="json")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         assert r.json()["a"].startswith("Record 1")
         self.assertEqual(r.json()["class"], "Record")
@@ -164,6 +195,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], "2023-01-01")
         self.assertEqual(r.json()["class"], "date")
         
+        r=client.get("/date/?a=2023-1-1", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "2023-01-01")
+        self.assertEqual(r.json()["class"], "date")
+    
+        r=client.post("/date/",  {"a":date(2023, 1, 1), }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "2023-01-01")
+        self.assertEqual(r.json()["class"], "date")
+        
 #        with self.assertRaises(request_casting.RequestCastingError):
 #            r=client.get("/date/?a=baddecimal")        
             
@@ -184,6 +225,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], 12.123)
         self.assertEqual(r.json()["class"], "Decimal")
         
+        r=client.get("/decimal/?a=2023.12", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 2023.12)
+        self.assertEqual(r.json()["class"], "Decimal")
+    
+        r=client.post("/decimal/",  {"a": Decimal(12.123) }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], 12.123)
+        self.assertEqual(r.json()["class"], "Decimal")
+        
         with self.assertRaises(request_casting.RequestCastingError):
             r=client.get("/decimal/?a=baddecimal")        
 
@@ -199,6 +250,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["class"], "datetime")
     
         r=client.post("/dtaware/",  {"a": datetime.utcnow() })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["class"], "datetime")
+        
+        
+        r=client.get("/dtaware/?a=2011-10-05T14:48:00.000Z", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "2011-10-05T14:48:00Z")
+        self.assertEqual(r.json()["class"], "datetime")
+    
+        r=client.post("/dtaware/",  {"a": datetime.utcnow() }, format="json")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["class"], "datetime")
         
