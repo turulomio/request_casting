@@ -237,6 +237,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], [1, 2])
         self.assertEqual(r.json()["class"], "list")
         
+        r=client.get("/list/integers/?a[]=1&a[]=2", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [1, 2])
+        self.assertEqual(r.json()["class"], "list")
+
+        r=client.post("/list/integers/", {"a":[1,] }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [1, ])
+        self.assertEqual(r.json()["class"], "list")
+        
         
     def test_get_list_of_urls(self):
         client = APIClient()

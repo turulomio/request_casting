@@ -154,6 +154,11 @@ def RequestListOfBools(request, field, default=None):
         raise RequestCastingError(_("Error in RequestListOfBools with method {0}").format(request.method))
         
 def RequestListOfIntegers(request, field, default=None,  separator=","):
+    """
+        If format=json in client post returns a dictionary instead of a querydict
+        
+        dictionary hasn't querydict.getlist method
+    """
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -164,9 +169,13 @@ def RequestListOfIntegers(request, field, default=None,  separator=","):
 
     try:
         r=[]
-        items=dictionary.getlist(field, [])
-        for i in items:
-            r.append(int(i))
+        if dictionary.__class__==dict:
+            for value in dictionary[field]:
+                r.append(int(value))
+        else:
+            items=dictionary.getlist(field, [])
+            for i in items:
+                r.append(int(i))
         return r
     except:
         raise RequestCastingError(_("Error in RequestListOfIntegers with method {0}").format(request.method))
