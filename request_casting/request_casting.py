@@ -20,8 +20,6 @@ def RequestUrl(request, field, class_,  default=None, select_related=[], prefetc
         
         Returns default if Can't be got
         
-        Parameters:
-            - validate_object: callable (function or lambda) that returns a boolean to validate got object. For example if object belongs to request.user
         
     """
     if request.method=="GET":
@@ -33,14 +31,10 @@ def RequestUrl(request, field, class_,  default=None, select_related=[], prefetc
         return default
     
     try:
-        o=object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related)
+        return object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related, validate_object)
     except:
         return None
-        
-    if validate_object is not None and o is not None and validate_object(o)==True:
-        return o
-    else:
-        return None
+
 
 ## Returns a query_set obect
 def RequestListOfUrls(request, field, model_class,   default=None,select_related=[],prefetch_related=[], model_url=None, validate_object=None):
@@ -56,11 +50,24 @@ def RequestListOfUrls(request, field, model_class,   default=None,select_related
         dictionary=request.GET
     else:
         dictionary=request.data
+
     if not field in dictionary:
         return default
+        
     r=[]
-    for url in  dictionary.getlist(field):
-        r.append(RequestUrl(request, field, model_class, default, select_related, prefetch_related, model_url, validate_object))
+    if dictionary.__class__==dict:
+        for value in dictionary[field]:
+            try:
+                r.append(object_from_url(value, model_class, model_url, select_related, prefetch_related, validate_object))
+            except:
+                r.append(None)
+    else:#Querydict
+        items=dictionary.getlist(field, [])
+        for value in items:
+            try:
+                r.append(object_from_url(value, model_class, model_url, select_related, prefetch_related, validate_object))
+            except:
+                r.append(None)
     return r
 
 def RequestDate(request, field, default=None):
@@ -85,7 +92,10 @@ def RequestBool(request, field, default=None):
     if not field in dictionary:
         return default
     try:
-        return  casts.str2bool(dictionary.get(field))
+        if dictionary.__class__==dict:
+            return bool(dictionary.get(field))
+        else:#Querydict
+            return  casts.str2bool(dictionary.get(field))
     except:
         raise RequestCastingError(_("Error in RequestBool with method {0}").format(request.method))
 
@@ -128,9 +138,13 @@ def RequestListOfStrings(request, field, default=None):
 
     try:
         r=[]
-        items=dictionary.getlist(field, [])
-        for i in items:
-            r.append(str(i))
+        if dictionary.__class__==dict:
+            for value in dictionary[field]:
+                r.append(str(value))
+        else:#Querydict
+            items=dictionary.getlist(field, [])
+            for i in items:
+                r.append(str(i))
         return r
     except:
         raise RequestCastingError(_("Error in RequestListOfStrings with method {0}").format(request.method))
@@ -146,14 +160,23 @@ def RequestListOfBools(request, field, default=None):
 
     try:
         r=[]
-        items=dictionary.getlist(field)
-        for i in items:
-            r.append(casts.str2bool(i))
+        if dictionary.__class__==dict:
+            for value in dictionary[field]:
+                r.append(bool(value))
+        else:#Querydict
+            items=dictionary.getlist(field, [])
+            for i in items:
+                r.append(casts.str2bool(i))
         return r
     except:
         raise RequestCastingError(_("Error in RequestListOfBools with method {0}").format(request.method))
         
 def RequestListOfIntegers(request, field, default=None,  separator=","):
+    """
+        If format=json in client post returns a dictionary instead of a querydict
+        
+        dictionary hasn't querydict.getlist method
+    """
     if request.method=="GET":
         dictionary=request.GET
     else:
@@ -164,9 +187,13 @@ def RequestListOfIntegers(request, field, default=None,  separator=","):
 
     try:
         r=[]
-        items=dictionary.getlist(field, [])
-        for i in items:
-            r.append(int(i))
+        if dictionary.__class__==dict:
+            for value in dictionary[field]:
+                r.append(int(value))
+        else:#Querydict
+            items=dictionary.getlist(field, [])
+            for i in items:
+                r.append(int(i))
         return r
     except:
         raise RequestCastingError(_("Error in RequestListOfIntegers with method {0}").format(request.method))
@@ -250,12 +277,22 @@ def parse_from_url(url, model_class, model_url=None):
     else:
         exception()
 
-def object_from_url(url, model_class, model_url=None,  select_related=[], prefetch_related=[]):
+def object_from_url(url, model_class, model_url=None,  select_related=[], prefetch_related=[], validate_object=None):
     """
         No exceptions and validations needed due to everything is tested in parse_from_url
+        Parameters:
+            - validate_object: callable (function or lambda) that returns a boolean to validate got object. For example if object belongs to request.user
     """
     model, id=parse_from_url(url, model_class, model_url )
-    return model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id)
+    o=model_class.objects.prefetch_related(*prefetch_related).select_related(*select_related).get(pk=id)
+            
+    if validate_object is None:
+        return o
+    else:#Needs object validation
+        if o is not None and validate_object(o)==True:
+            return o
+        else:
+            return None
 
 ## Returns false if some arg is None
 def all_args_are_not_none(*args):
