@@ -423,13 +423,13 @@ files = [
 
 [[package]]
 name = "django"
-version = "4.2.7"
+version = "4.2.8"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Django-4.2.7-py3-none-any.whl", hash = "sha256:e1d37c51ad26186de355cbcec16613ebdabfa9689bbade9c538835205a8abbe9"},
-    {file = "Django-4.2.7.tar.gz", hash = "sha256:8e0f1c2c2786b5c0e39fe1afce24c926040fad47c8ea8ad30aaf1188df29fc41"},
+    {file = "Django-4.2.8-py3-none-any.whl", hash = "sha256:6cb5dcea9e3d12c47834d32156b8841f533a4493c688e2718cafd51aa430ba6d"},
+    {file = "Django-4.2.8.tar.gz", hash = "sha256:d69d5e36cc5d9f4eb4872be36c622878afcdce94062716cf3e25bcedcb168b62"},
 ]
 
 [package.dependencies]
@@ -574,13 +574,13 @@ files = [
 
 [[package]]
 name = "importlib-metadata"
-version = "6.9.0"
+version = "7.0.0"
 description = "Read metadata from Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "importlib_metadata-6.9.0-py3-none-any.whl", hash = "sha256:1c8dc6839ddc9771412596926f24cb5a553bbd40624ee2c7e55e531542bed3b8"},
-    {file = "importlib_metadata-6.9.0.tar.gz", hash = "sha256:e8acb523c335a91822674e149b46c0399ec4d328c4d1f6e49c273da5ff0201b9"},
+    {file = "importlib_metadata-7.0.0-py3-none-any.whl", hash = "sha256:d97503976bb81f40a193d41ee6570868479c69d5068651eb039c40d850c59d67"},
+    {file = "importlib_metadata-7.0.0.tar.gz", hash = "sha256:7fc841f8b8332803464e5dc1c63a2e59121f46ca186c0e2e182e80bf8c1319f7"},
 ]
 
 [package.dependencies]
@@ -754,6 +754,20 @@ files = [
 ]
 
 [[package]]
+name = "ordered-set"
+version = "4.1.0"
+description = "An OrderedSet is a custom MutableSet that remembers its order, so that every"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "ordered-set-4.1.0.tar.gz", hash = "sha256:694a8e44c87657c59292ede72891eb91d34131f6531463aab3009191c77364a8"},
+    {file = "ordered_set-4.1.0-py3-none-any.whl", hash = "sha256:046e1132c71fcf3330438a539928932caf51ddbc582496833e23de611de14562"},
+]
+
+[package.extras]
+dev = ["black", "mypy", "pytest"]
+
+[[package]]
 name = "packaging"
 version = "23.2"
 description = "Core utilities for Python packages"
@@ -923,17 +937,40 @@ files = [
 
 [[package]]
 name = "pydicts"
-version = "0.8.0"
+version = "0.9.0"
 description = "Module to use dictionaries in various situations"
 optional = false
-python-versions = ">3.8"
+python-versions = ">=3.8"
 files = [
-    {file = "pydicts-0.8.0-py3-none-any.whl", hash = "sha256:205ffbb43104121927f3cd5c296a4d712979d3a0e437f7147effcc53e27ac61c"},
-    {file = "pydicts-0.8.0.tar.gz", hash = "sha256:02a01165ede2852ed845691f6b4e0b3581a75308454e5dec350242c13207a3d2"},
+    {file = "pydicts-0.9.0-py3-none-any.whl", hash = "sha256:be7b5a3f4e5465f8f38ee7374c05e35ecef726a835b487929f2a17bad39b7afb"},
+    {file = "pydicts-0.9.0.tar.gz", hash = "sha256:897dad755cb7030ca40d534795bac1743d0769dd39de48a55cc819cb455a4755"},
 ]
 
 [package.dependencies]
-tabulate = ">=0.9.0,<0.10.0"
+pylatex = ">=1.4.1"
+tabulate = ">=0.9.0"
+
+[[package]]
+name = "pylatex"
+version = "1.4.2"
+description = "A Python library for creating LaTeX files and snippets"
+optional = false
+python-versions = "*"
+files = [
+    {file = "PyLaTeX-1.4.2.tar.gz", hash = "sha256:bb7b21bec57ecdba3f6f44c856ebebdf6549fd6e80661bd44fd5094236729242"},
+]
+
+[package.dependencies]
+ordered-set = "*"
+
+[package.extras]
+all = ["MarkupSafe (==2.0.1)", "alabaster (<0.7.12)", "black", "coverage", "isort", "jinja2 (<3.0)", "matplotlib", "numpy", "pytest (>=4.6)", "pytest-cov", "quantities", "sphinx", "twine"]
+docs = ["MarkupSafe (==2.0.1)", "alabaster (<0.7.12)", "jinja2 (<3.0)", "sphinx"]
+matplotlib = ["matplotlib"]
+matrices = ["numpy"]
+packaging = ["twine"]
+quantities = ["numpy", "quantities"]
+testing = ["black", "coverage", "isort", "pytest (>=4.6)", "pytest-cov"]
 
 [[package]]
 name = "pyproject-hooks"
@@ -1357,4 +1394,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">3.8,<4.0"
-content-hash = "1a0e1619c0923aff6d55fc8cb2632fd11fefb83cd42eeeb5448bde09469f25b6"
+content-hash = "f36cb1d0e64b28107c8261199c7ac93d1cd30ee12b2958a525bc3f151d080628"
