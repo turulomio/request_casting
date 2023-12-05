@@ -208,6 +208,16 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], [True, False])
         self.assertEqual(r.json()["class"], "list")
         
+        r=client.get("/list/bools/?a[]=true&a[]=false", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [True, False])
+        self.assertEqual(r.json()["class"], "list")
+    
+        r=client.post("/list/bools/", {"a":[True,False], }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [True, False])
+        self.assertEqual(r.json()["class"], "list")
+        
     def test_get_list_of_strings(self):
         client = APIClient()
         

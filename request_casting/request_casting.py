@@ -146,9 +146,13 @@ def RequestListOfBools(request, field, default=None):
 
     try:
         r=[]
-        items=dictionary.getlist(field)
-        for i in items:
-            r.append(casts.str2bool(i))
+        if dictionary.__class__==dict:
+            for value in dictionary[field]:
+                r.append(bool(value))
+        else:#Querydict
+            items=dictionary.getlist(field, [])
+            for i in items:
+                r.append(casts.str2bool(i))
         return r
     except:
         raise RequestCastingError(_("Error in RequestListOfBools with method {0}").format(request.method))
@@ -172,7 +176,7 @@ def RequestListOfIntegers(request, field, default=None,  separator=","):
         if dictionary.__class__==dict:
             for value in dictionary[field]:
                 r.append(int(value))
-        else:
+        else:#Querydict
             items=dictionary.getlist(field, [])
             for i in items:
                 r.append(int(i))
