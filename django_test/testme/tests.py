@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import date
 from decimal import Decimal
 from django.utils import timezone
 from django.contrib.auth.models import User
