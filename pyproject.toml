@@ -24,6 +24,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poe.tasks]
 release = { script = "request_casting.poethepoet:release" }
 reusing = { script = "request_casting.poethepoet:reusing" }
+test = { script = "request_casting.poethepoet:test" }
 coverage = { script = "request_casting.poethepoet:coverage" }
 translate = { script = "request_casting.poethepoet:translate" }
 

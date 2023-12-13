@@ -13,6 +13,10 @@ def coverage():
     chdir("django_test")
     system("python manage.py coverage")
 
+def test():
+    chdir("django_test")
+    system("python manage.py test")
+
 def translate():
         system("xgettext -L Python --no-wrap --no-location --from-code='UTF-8' -o request_casting/locale/request_casting.pot  request_casting/*.py")
         system("msgmerge -N --no-wrap -U request_casting/locale/es.po request_casting/locale/request_casting.pot")
