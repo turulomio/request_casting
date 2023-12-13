@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">3.8,<4.0"
-pydicts = ">=0.9.0"
+pydicts = ">=0.11.0"
 
 [tool.poetry.group.dev.dependencies]
 poetry = ">=1.5.1"
@@ -24,6 +24,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poe.tasks]
 release = { script = "request_casting.poethepoet:release" }
 reusing = { script = "request_casting.poethepoet:reusing" }
+test = { script = "request_casting.poethepoet:test" }
 coverage = { script = "request_casting.poethepoet:coverage" }
 translate = { script = "request_casting.poethepoet:translate" }
 
