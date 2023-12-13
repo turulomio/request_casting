@@ -1,10 +1,11 @@
 from datetime import datetime, date
 from decimal import Decimal
 from django.utils import timezone
+from django.contrib.auth.models import User
+from pydicts import casts
 from request_casting import request_casting
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
-from django.contrib.auth.models import User
 from testme import models
 
 class CtTestCase(APITestCase):    
@@ -249,7 +250,7 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], "2011-10-05T14:48:00Z")
         self.assertEqual(r.json()["class"], "datetime")
     
-        r=client.post("/dtaware/",  {"a": datetime.utcnow() })
+        r=client.post("/dtaware/",  {"a": casts.dtaware2str(casts.dtaware_now()) })
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["class"], "datetime")
         
@@ -259,7 +260,7 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], "2011-10-05T14:48:00Z")
         self.assertEqual(r.json()["class"], "datetime")
     
-        r=client.post("/dtaware/",  {"a": datetime.utcnow() }, format="json")
+        r=client.post("/dtaware/",  {"a": casts.dtaware2str(casts.dtaware_now()) }, format="json")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["class"], "datetime")
         
