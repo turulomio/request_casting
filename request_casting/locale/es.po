@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TooManyFiles\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-03 11:18+0100\n"
+"POT-Creation-Date: 2023-12-14 20:40+0100\n"
 "PO-Revision-Date: 2020-04-03 08:54+0200\n"
 "Last-Translator: trabajo <turulomio@yahoo.es>\n"
 "Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
@@ -20,45 +20,21 @@ msgstr ""
 "X-Generator: Lokalize 19.12.3\n"
 
 #, python-brace-format
-msgid "Error in RequestDate with method {0}"
-msgstr "Error en RequestDate con método {0}"
-
-#, python-brace-format
-msgid "Error in RequestBool with method {0}"
-msgstr "Error en RequestBool con método {0}"
-
-#, python-brace-format
-msgid "Error in RequestDecimal with method {0}"
-msgstr "Error en RequestDecimal con método {0}"
-
-#, python-brace-format
-msgid "Error in RequestInteger with method {0}"
-msgstr ""
-
-#, python-brace-format
-msgid "Error in RequestListOfStrings with method {0}"
-msgstr ""
-
-#, python-brace-format
-msgid "Error in RequestListOfBools with method {0}"
-msgstr ""
-
-#, python-brace-format
-msgid "Error in RequestListOfIntegers with method {0}"
-msgstr ""
-
-#, python-brace-format
-msgid "Error in RequestDtaware with method {0}"
-msgstr ""
-
-#, python-brace-format
-msgid "Error in RequestString with method {0}"
-msgstr ""
-
-#, python-brace-format
 msgid "I couldn't get id from this url: {0}"
 msgstr "No pude conseguir el id de esta url: {0}"
 
 #, python-brace-format
 msgid "Url ({0}) couldn't be parsed. Model: {1}. Real string before id: {2}"
 msgstr ""
+
+#, python-brace-format
+#~ msgid "Error in RequestDate with method {0}"
+#~ msgstr "Error en RequestDate con método {0}"
+
+#, python-brace-format
+#~ msgid "Error in RequestBool with method {0}"
+#~ msgstr "Error en RequestBool con método {0}"
+
+#, python-brace-format
+#~ msgid "Error in RequestDecimal with method {0}"
+#~ msgstr "Error en RequestDecimal con método {0}"
