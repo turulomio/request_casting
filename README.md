@@ -225,6 +225,9 @@ Run `poe coverage` to test module.
 
 ## Changelog
 
+### 0.6.0 (2023-12-14)
+- Using pydicts-0.11.0 library to capture errors and fix bugs
+
 ### 0.5.0 (2023-12-05)
 - Added support to request_casting with json formats (APICLIENT)
 
