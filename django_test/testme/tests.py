@@ -177,11 +177,21 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], True)
         self.assertEqual(r.json()["class"], "bool")
         
-#        #To test RequestCastingError
-#        r=client.get("/bool/?a=tyyui")
+
         
         #To test default
         r=client.get("/bool/?not_a=true")
+        
+        
+        # Bad values
+        r=client.get("/bool/?a=tyyui")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
+        
+        
+        r=client.post("/bool/",  {"a": None, }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
         
     def test_get_date(self):
         client = APIClient()
@@ -211,6 +221,16 @@ class CtTestCase(APITestCase):
             
         #To test default
         r=client.get("/date/?not_a=2023-1-1")
+        
+        #Bad values
+        r=client.post("/date/",  {"a": None, }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
+        
+        
+        r=client.post("/date/",  {"a": 2023, }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
             
         
     def test_get_decimal(self):
@@ -235,12 +255,20 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], 12.123)
         self.assertEqual(r.json()["class"], "Decimal")
-        
-        with self.assertRaises(request_casting.RequestCastingError):
-            r=client.get("/decimal/?a=baddecimal")        
+          
 
         #To test default
         r=client.get("/decimal/?not_a=12.34")
+        
+                
+        #Bad values
+        r=client.post("/decimal/",  {"a": None, }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
+
+        r=client.get("/decimal/?a=baddecimal")      
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
 
     def test_get_dtaware(self):
         client = APIClient()

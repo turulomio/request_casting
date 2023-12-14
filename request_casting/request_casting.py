@@ -78,11 +78,9 @@ def RequestDate(request, field, default=None):
         
     if not field in dictionary:
         return default
-    try:
-        return casts.str2date(dictionary.get(field))
-    except:
-        raise RequestCastingError(_("Error in RequestDate with method {0}").format(request.method))
-
+    
+    return casts.str2date(dictionary.get(field), ignore_exception=True, ignore_exception_value=default)
+    
 def RequestBool(request, field, default=None):
     if request.method=="GET":
         dictionary=request.GET
@@ -91,13 +89,8 @@ def RequestBool(request, field, default=None):
         
     if not field in dictionary:
         return default
-    try:
-        if dictionary.__class__==dict:
-            return bool(dictionary.get(field))
-        else:#Querydict
-            return  casts.str2bool(dictionary.get(field))
-    except:
-        raise RequestCastingError(_("Error in RequestBool with method {0}").format(request.method))
+
+    return casts.str2bool(str(dictionary.get(field)), ignore_exception=True, ignore_exception_value=default)
 
 def RequestDecimal(request, field, default=None):
     if request.method=="GET":
@@ -107,11 +100,8 @@ def RequestDecimal(request, field, default=None):
         
     if not field in dictionary:
         return default
-
-    try:
-        return Decimal(dictionary.get(field))
-    except:
-        raise RequestCastingError(_("Error in RequestDecimal with method {0}").format(request.method))
+        
+    return casts.str2decimal(str(dictionary.get(field)), ignore_exception=True, ignore_exception_value=default)
 
 def RequestInteger(request, field, default=None):
     if request.method=="GET":
