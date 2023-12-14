@@ -92,12 +92,18 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], 1)
         self.assertEqual(r.json()["class"], "int")
         
-                
-        with self.assertRaises(request_casting.RequestCastingError):
-            r=client.get("/integer/?a=badinteger")        
+    
+        r=client.get("/integer/?a=badinteger")        
+        self.assertEqual(r.json()["a"], None)
 
         #To test default
         r=client.get("/integer/?not_a=12")
+        
+        # Bad values
+        r=client.get("/integer/?a=tyyui")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
+        
         
     def test_get_string(self):
         client = APIClient()
@@ -299,8 +305,14 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["class"], "datetime")
         
-        with self.assertRaises(request_casting.RequestCastingError):
-            r=client.get("/dtaware/?a=baddt")
+        # Bad values
+        r=client.post("/dtaware/", {"a": "http"}, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None )
+        
+        r=client.get("/dtaware/?a=baddt")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None )
 
     def test_get_list_of_bools(self):
         client = APIClient()
@@ -324,6 +336,18 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], [True, False])
         self.assertEqual(r.json()["class"], "list")
+        
+        
+        # Bad values
+        r=client.post("/list/bools/", {"a": ["http", "http"]}, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [None, None] )
+        
+        
+        r=client.post("/list/bools/", {"other_a": ["http", "http"]}, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None )
+        
         
     def test_get_list_of_strings(self):
         client = APIClient()
@@ -379,29 +403,35 @@ class CtTestCase(APITestCase):
         client = APIClient()
         r=client.get("/list/urls/?a[]=http://localhost:8000/api/records/1/&a[]=http://localhost:8000/api/records/3/")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
-        self.assertEqual(r.json()["a"], 2)
+        self.assertEqual(r.json()["len"], 2)
         self.assertEqual(r.json()["class"], "list")
         
         r=client.post("/list/urls/", {"a": ["http://localhost:8000/api/records/1/", "http://localhost:8000/api/records/3/"]})
         self.assertEqual(r.status_code, status.HTTP_200_OK)
-        self.assertEqual(r.json()["a"], 2)
+        self.assertEqual(r.json()["len"], 2)
         self.assertEqual(r.json()["class"], "list")
         
         r=client.get("/list/urls/?a[]=http://localhost:8000/api/records/1/&a[]=http://localhost:8000/api/records/3/", format="json")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
-        self.assertEqual(r.json()["a"], 2)
+        self.assertEqual(r.json()["len"], 2)
         self.assertEqual(r.json()["class"], "list")
         
         r=client.post("/list/urls/", {"a": ["http://localhost:8000/api/records/1/", "http://localhost:8000/api/records/3/"]}, format="json")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
-        self.assertEqual(r.json()["a"], 2)
+        self.assertEqual(r.json()["len"], 2)
         self.assertEqual(r.json()["class"], "list")
         
         r=client.get("/list/urls/?not_a[]=http://localhost:8000/api/record/1/&not_a[]=http://localhost:8000/api/record/2/")
-        self.assertEqual(r.json()["a"], None)
+        self.assertEqual(r.json()["a"], "None")
         
         r=client.get("/list/urls/?a[]=http://localhost:8000/api/record/1/&a[]=http://localhost:8000/api/record/2/")
-        self.assertEqual(r.json()["a"], 2)
+        self.assertEqual(r.json()["len"], 2)
+
+        # Bad values
+        r=client.post("/list/urls/", {"a": ["http", "http"]}, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], '[None, None]' )
+        
         
     def test_all_args_are_not_none(self):
         r=request_casting.all_args_are_not_none(None, None, None)
