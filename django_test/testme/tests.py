@@ -153,6 +153,13 @@ class CtTestCase(APITestCase):
 
         r=client.get("/url/?not_a=http://localhost:8000/api/records/1/")
         self.assertEqual(r.json()["a"], "None")
+        
+        
+        # Bad values
+        r=client.get("/url/?a=tyyui")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "None")
+        
 
     def test_get_bool(self):
         client = APIClient()
