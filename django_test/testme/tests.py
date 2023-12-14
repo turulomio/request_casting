@@ -131,6 +131,16 @@ class CtTestCase(APITestCase):
         #To test default
         r=client.get("/string/?not_a=12")
         
+        # Bad values
+        r=client.get("/string/?a=null")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "null")
+        
+        r=client.post("/string/",  {"a":None, }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
+        
+        
     def test_get_url(self):
         client = APIClient()
         r=client.get("/url/?a=http://localhost:8000/api/records/1/")
@@ -165,6 +175,12 @@ class CtTestCase(APITestCase):
         r=client.get("/url/?a=tyyui")
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], "None")
+        
+        
+        r=client.post("/url/",  {"a":None, }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "None")
+        
         
 
     def test_get_bool(self):
@@ -375,6 +391,14 @@ class CtTestCase(APITestCase):
         r=client.get("/list/strings/?not_a[]=Elvis&not_a[]=Presley")
         self.assertEqual(r.json()["a"], None)
         
+        
+        # Bad values
+        r=client.post("/list/strings/", {"a": [None, None]}, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], ["None", "None"] )
+        
+        
+        
     def test_get_list_of_integers(self):
         client = APIClient()
         
@@ -398,6 +422,11 @@ class CtTestCase(APITestCase):
         self.assertEqual(r.json()["a"], [1, ])
         self.assertEqual(r.json()["class"], "list")
         
+        
+        # Bad values
+        r=client.post("/list/integers/", {"a": [None, None]}, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], [None, None] )
         
     def test_get_list_of_urls(self):
         client = APIClient()

@@ -178,11 +178,17 @@ def RequestListOfIntegers(request, field, default=None,  separator=","):
         r=[]
         if dictionary.__class__==dict:
             for value in dictionary[field]:
-                r.append(int(value))
+                try:
+                    r.append(int(value))
+                except:
+                    r.append(None)
         else:#Querydict
             items=dictionary.getlist(field, [])
             for i in items:
-                r.append(int(i))
+                try:
+                    r.append(int(i))
+                except:
+                    r.append(None)
         return r
     except:
         return default
