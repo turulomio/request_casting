@@ -1,4 +1,3 @@
-from decimal import Decimal
 from gettext import translation
 from importlib.resources import files
 from pydicts import casts
@@ -33,7 +32,7 @@ def RequestUrl(request, field, class_,  default=None, select_related=[], prefetc
     try:
         return object_from_url(dictionary.get(field), class_, model_url, select_related, prefetch_related, validate_object)
     except:
-        return None
+        return default
 
 
 ## Returns a query_set obect
@@ -78,11 +77,9 @@ def RequestDate(request, field, default=None):
         
     if not field in dictionary:
         return default
-    try:
-        return casts.str2date(dictionary.get(field))
-    except:
-        raise RequestCastingError(_("Error in RequestDate with method {0}").format(request.method))
-
+    
+    return casts.str2date(dictionary.get(field), ignore_exception=True, ignore_exception_value=default)
+    
 def RequestBool(request, field, default=None):
     if request.method=="GET":
         dictionary=request.GET
@@ -91,13 +88,8 @@ def RequestBool(request, field, default=None):
         
     if not field in dictionary:
         return default
-    try:
-        if dictionary.__class__==dict:
-            return bool(dictionary.get(field))
-        else:#Querydict
-            return  casts.str2bool(dictionary.get(field))
-    except:
-        raise RequestCastingError(_("Error in RequestBool with method {0}").format(request.method))
+
+    return casts.str2bool(str(dictionary.get(field)), ignore_exception=True, ignore_exception_value=default)
 
 def RequestDecimal(request, field, default=None):
     if request.method=="GET":
@@ -107,11 +99,8 @@ def RequestDecimal(request, field, default=None):
         
     if not field in dictionary:
         return default
-
-    try:
-        return Decimal(dictionary.get(field))
-    except:
-        raise RequestCastingError(_("Error in RequestDecimal with method {0}").format(request.method))
+        
+    return casts.str2decimal(str(dictionary.get(field)), ignore_exception=True, ignore_exception_value=default)
 
 def RequestInteger(request, field, default=None):
     if request.method=="GET":
@@ -125,7 +114,7 @@ def RequestInteger(request, field, default=None):
     try:
         return int(dictionary.get(field))
     except:
-        raise RequestCastingError(_("Error in RequestInteger with method {0}").format(request.method))
+        return default
 
 def RequestListOfStrings(request, field, default=None):    
     if request.method=="GET":
@@ -147,7 +136,7 @@ def RequestListOfStrings(request, field, default=None):
                 r.append(str(i))
         return r
     except:
-        raise RequestCastingError(_("Error in RequestListOfStrings with method {0}").format(request.method))
+        return default
 
 def RequestListOfBools(request, field, default=None):    
     if request.method=="GET":
@@ -162,14 +151,14 @@ def RequestListOfBools(request, field, default=None):
         r=[]
         if dictionary.__class__==dict:
             for value in dictionary[field]:
-                r.append(bool(value))
+                r.append(casts.str2bool(str(value), ignore_exception=True, ignore_exception_value=None))
         else:#Querydict
             items=dictionary.getlist(field, [])
             for i in items:
-                r.append(casts.str2bool(i))
+                r.append(casts.str2bool(str(i), ignore_exception=True, ignore_exception_value=None))
         return r
     except:
-        raise RequestCastingError(_("Error in RequestListOfBools with method {0}").format(request.method))
+        return default
         
 def RequestListOfIntegers(request, field, default=None,  separator=","):
     """
@@ -189,14 +178,20 @@ def RequestListOfIntegers(request, field, default=None,  separator=","):
         r=[]
         if dictionary.__class__==dict:
             for value in dictionary[field]:
-                r.append(int(value))
+                try:
+                    r.append(int(value))
+                except:
+                    r.append(None)
         else:#Querydict
             items=dictionary.getlist(field, [])
             for i in items:
-                r.append(int(i))
+                try:
+                    r.append(int(i))
+                except:
+                    r.append(None)
         return r
     except:
-        raise RequestCastingError(_("Error in RequestListOfIntegers with method {0}").format(request.method))
+        return default
 
 def RequestDtaware(request, field, timezone_string, default=None):
     if request.method=="GET":
@@ -206,13 +201,9 @@ def RequestDtaware(request, field, timezone_string, default=None):
         
     if not field in dictionary:
         return default
-
-    try:
-        return casts.str2dtaware(dictionary.get(field), "JsUtcIso",  timezone_string)
-    except:
-        raise RequestCastingError(_("Error in RequestDtaware with method {0}").format(request.method))
-
-
+        
+    
+    return casts.str2dtaware(dictionary.get(field), "JsUtcIso",  timezone_string, ignore_exception=True, ignore_exception_value=default)
 
 def RequestString(request, field, default=None):
     if request.method=="GET":
@@ -225,7 +216,7 @@ def RequestString(request, field, default=None):
     try:
         return dictionary.get(field)
     except:
-        raise RequestCastingError(_("Error in RequestString with method {0}").format(request.method))
+        return default
 
 
 

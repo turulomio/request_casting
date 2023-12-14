@@ -73,7 +73,7 @@ def list_of_urls(request):
         a=request_casting.RequestListOfUrls(request, "a[]", models.Record, model_url="records")
     else:
         a=request_casting.RequestListOfUrls(request, "a", models.Record, model_url="records")
-    return Response({"a": None if a is None else len(a),  "class": a.__class__.__name__ }, status=status.HTTP_200_OK)     
+    return Response({"a": str(a), "len": None if a is None else len(a),   "class": a.__class__.__name__ }, status=status.HTTP_200_OK)     
     
 @api_view(['GET', 'POST'])
 def url(request):
