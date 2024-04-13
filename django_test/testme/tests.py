@@ -297,6 +297,42 @@ class CtTestCase(APITestCase):
 
         r=client.get("/decimal/?a=baddecimal")      
         self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)            
+        
+    def test_get_email(self):
+        client = APIClient()
+        
+        r=client.get("/email/?a=hi.hi.com")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
+        self.assertEqual(r.json()["class"], "NoneType")
+    
+        r=client.post("/email/",  {"a": Decimal(12.123) })
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
+        self.assertEqual(r.json()["class"], "NoneType")
+        
+        r=client.get("/email/?a=hi@hi.com", format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "hi@hi.com")
+        self.assertEqual(r.json()["class"], "str")
+    
+        r=client.post("/email/",  {"a": "hi@hi.com" }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], "hi@hi.com")
+        self.assertEqual(r.json()["class"], "str")
+          
+
+        #To test default
+        r=client.get("/email/?not_a=hi@hi.comm")
+                
+        #Bad values
+        r=client.post("/email/",  {"a": None, }, format="json")
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()["a"], None)
+
+        r=client.get("/email/?a=bademail")      
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.json()["a"], None)
 
     def test_get_dtaware(self):

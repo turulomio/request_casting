@@ -4,7 +4,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'records', views.RecordViewSet)
-router.register(r'posts', views.RecordViewSet)
+router.register(r'posts', views.PostsViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
@@ -12,6 +12,7 @@ urlpatterns = [
     path('date/', views.date),
     path('decimal/', views.decimal),
     path('dtaware/', views.dtaware),
+    path('email/', views.email),
     path('integer/', views.integer),
     path('list/bools/', views.list_of_bools),
     path('list/integers/', views.list_of_integers),
