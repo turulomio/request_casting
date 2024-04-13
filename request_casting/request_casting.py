@@ -204,6 +204,20 @@ def RequestDtaware(request, field, timezone_string, default=None):
         
     
     return casts.str2dtaware(dictionary.get(field), "JsUtcIso",  timezone_string, ignore_exception=True, ignore_exception_value=default)
+    
+def RequestEmail(request, field, default=None):
+    if request.method=="GET":
+        dictionary=request.GET
+    else:
+        dictionary=request.data
+        
+    if not field in dictionary:
+        return default
+        
+    if casts.is_email(dictionary.get(field)):
+        return dictionary.get(field)
+    else:
+        return default
 
 def RequestString(request, field, default=None):
     if request.method=="GET":

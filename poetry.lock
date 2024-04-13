@@ -924,13 +924,13 @@ files = [
 
 [[package]]
 name = "pydicts"
-version = "0.15.0"
+version = "0.16.0"
 description = "Module to use dictionaries in various situations"
 optional = false
 python-versions = "<4,>=3.9"
 files = [
-    {file = "pydicts-0.15.0-py3-none-any.whl", hash = "sha256:9a636b0219038cda10a3bcf22b60c02aa0c2c74370a1e2a086736ca1d02c7853"},
-    {file = "pydicts-0.15.0.tar.gz", hash = "sha256:f3cb1be00f0a769d382e6274e0d516215a9b44f40a1930efe3c16f327e108371"},
+    {file = "pydicts-0.16.0-py3-none-any.whl", hash = "sha256:b7876badde79e1bd9f4eb4d21819e7a85a9e6a3716b61029b5e6b6fd4551ef08"},
+    {file = "pydicts-0.16.0.tar.gz", hash = "sha256:279a398c26d64e696a17cca85aba20b59daf2990c5f8104dd349c7882514cb19"},
 ]
 
 [package.dependencies]
@@ -1372,4 +1372,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">3.10,<4.0"
-content-hash = "6d094dcae33575d926d0a197f8e40d451c552518769e6181e117a464109e6ed4"
+content-hash = "87e0e98d14807bbd4f80e9af3bdedfefbd5338a7b15a711e02b17b3d05b7e046"
