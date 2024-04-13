@@ -92,6 +92,19 @@ curl http://localhost:8000/myview/?a=2011-10-05T14:48:00.000Z   => a will be a d
 curl http://localhost:8000/myview/?a=2021-1-1   => a will be None
 ```
 
+### RequestEmail
+Use this method inside a view to get a validated email
+
+```python
+    # ... The same as RequestBool example
+    a=request_casting.RequestEmail(request, "a")
+```
+You'll get this answers
+``` 
+curl http://localhost:8000/myview/?a=hi@hi.com   => a will be an email
+curl http://localhost:8000/myview/?a=hi.hi.com   => a will be None
+```
+
 ### RequestInteger
 
 Use this method inside a view to get a casted Integer
@@ -224,6 +237,10 @@ It's very usefull to compare view parameters fast.
 Run `poe coverage` to test module.
 
 ## Changelog
+
+### 0.7.0 (2024-04-13)
+- Using pydicts-0.16.0
+- Added RequestEmail method
 
 ### 0.6.0 (2023-12-14)
 - Using pydicts-0.11.0 library to capture errors and fix bugs
