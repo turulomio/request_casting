@@ -12,6 +12,7 @@ urlpatterns = [
     path('date/', views.date),
     path('decimal/', views.decimal),
     path('dtaware/', views.dtaware),
+    path('email/', views.email),
     path('integer/', views.integer),
     path('list/bools/', views.list_of_bools),
     path('list/integers/', views.list_of_integers),

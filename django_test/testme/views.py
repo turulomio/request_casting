@@ -78,7 +78,12 @@ def list_of_urls(request):
 @api_view(['GET', 'POST'])
 def url(request):
     a=request_casting.RequestUrl(request, "a", models.Record, model_url="records", validate_object=lambda o: o.user==User.objects.get(pk=1))
-    return Response({"a": str(a),  "class": a.__class__.__name__}, status=status.HTTP_200_OK)     
+    return Response({"a": str(a),  "class": a.__class__.__name__}, status=status.HTTP_200_OK)
+    
+@api_view(['GET', 'POST'])
+def email(request):
+    a=request_casting.RequestEmail(request, "a")
+    return Response({"a": a,  "class": a.__class__.__name__}, status=status.HTTP_200_OK)     
     
 
     
