@@ -21,7 +21,6 @@ def translate():
         system("xgettext -L Python --no-wrap --no-location --from-code='UTF-8' -o request_casting/locale/request_casting.pot  request_casting/*.py")
         system("msgmerge -N --no-wrap -U request_casting/locale/es.po request_casting/locale/request_casting.pot")
         system("msgfmt -cv -o request_casting/locale/es/LC_MESSAGES/request_casting.mo request_casting/locale/es.po")
-        system("msgfmt -cv -o request_casting/locale/en/LC_MESSAGES/request_casting.mo request_casting/locale/en.po")
 
 def release():
     print("""Nueva versión:

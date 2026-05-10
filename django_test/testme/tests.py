@@ -535,4 +535,33 @@ class CtTestCase(APITestCase):
         with self.assertRaises(models.Posts.DoesNotExist):#No existe este id
             request_casting.object_from_url("http://localhost:8000/api/posts/100/", models.Posts)
         
+    def test_all_args_are_none(self):
+        # All arguments are None
+        r = request_casting.all_args_are_none(None, None, None)
+        self.assertEqual(r, True)
+
+        # Some arguments are None, some are not
+        r = request_casting.all_args_are_none(None, 1, None)
+        self.assertEqual(r, False)
+        r = request_casting.all_args_are_none(1, None, None)
+        self.assertEqual(r, False)
+        r = request_casting.all_args_are_none(None, None, "hello")
+        self.assertEqual(r, False)
+
+        # No arguments are None
+        r = request_casting.all_args_are_none(1, 1, 1)
+        self.assertEqual(r, False)
+        r = request_casting.all_args_are_none("", "", "")
+        self.assertEqual(r, False)
+        r = request_casting.all_args_are_none("a", "b", "c")
+        self.assertEqual(r, False)
+        r = request_casting.all_args_are_none(0, False, []) # 0, False, and [] are not None
+        self.assertEqual(r, False)
+
+        # Single argument
+        self.assertEqual(request_casting.all_args_are_none(None), True)
+        self.assertEqual(request_casting.all_args_are_none(1), False)
+
+        # No arguments
+        self.assertEqual(request_casting.all_args_are_none(), True)
  
