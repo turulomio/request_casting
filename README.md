@@ -207,6 +207,16 @@ curl "http://localhost:8000/myview/?a[]=http://localhost:8000/api/records/1/&a[]
 
 ## Other usefull functions
 
+### all_args_are_none 
+
+Returns True if all function arguments are None. It's very usefull to compare view parameters faster. 
+
+```python
+    request_casting.all_args_are_none(None, None, None) #Returns True
+    request_casting.all_args_are_none(1, None, None)# Returns False
+    request_casting.all_args_are_none(1, 1, 1) #Return False 
+```
+
 ### all_args_are_not_empty
 
 Returns True if all function arguments are different to None and ""
@@ -235,31 +245,3 @@ It's very usefull to compare view parameters fast.
 ## Test module
 
 Run `poe coverage` to test module.
-
-## Changelog
-
-### 0.7.0 (2024-04-13)
-- Using pydicts-0.16.0
-- Added RequestEmail method
-
-### 0.6.0 (2023-12-14)
-- Using pydicts-0.11.0 library to capture errors and fix bugs
-
-### 0.5.0 (2023-12-05)
-- Added support to request_casting with json formats (APICLIENT)
-
-### 0.4.0 (2023-12-05)
-- Migrated to pydicts-0.9.0
-
-### 0.3.0 (2023-12-04)
-- Improved parse_from_url and object_from_url validations
-- Added validate_object to RequestUrl and RequestListOfUrls to validate returned objects
-- Added gettext support
-
-### 0.2.0 (2023-11-18)
-- Improving documentation
-- All default values are set to None, including RequestList methods
-- string2dtaware now uses ZoneInfo instead of pytz
-
-### 0.1.0 (2023-11-15)
-- Converted reusingcode module to an independent module
