@@ -1,25 +1,36 @@
-[tool.poetry]
+
+[project]
 name = "request_casting"
 version = "0.7.0"
 description = "Provide method to cast django request data for POST and GET methods"
-authors = ["turulomio <turulomio@yahoo.es>"]
-license = "GPL-3.0 license"
+authors = [{name = "turulomio", email = "turulomio@yahoo.es"}]
+license = {text = "GPL-3.0 license"}
 readme = "README.md"
+requires-python = ">=3.12,<4"
+dependencies = [
+    "pydicts >=1.3.0",
+]
 
-[tool.poetry.dependencies]
-python = ">3.10,<4.0"
-pydicts = ">=0.16.0"
+
+[project.urls]
+homepage = "https://github.com/turulomio/request_casting/"
+repository = "https://github.com/turulomio/request_casting/"
+changelog = "https://github.com/turulomio/request_casting#changelog"
+
 
 [tool.poetry.group.dev.dependencies]
-poetry = ">=1.8.2"
-poethepoet = ">=0.25.0"
-django = ">=5.0.4"
-djangorestframework = ">=3.15.1"
-coverage = ">=7.4.4"
+poetry = ">=2.4.1"
+poethepoet = ">=0.45.0"
+django = ">=6.0.5"
+djangorestframework = ">=3.17.1"
+coverage = ">=7.13.5"
+
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
 
 [tool.poe.tasks]
 release = { script = "request_casting.poethepoet:release" }
@@ -27,8 +38,3 @@ reusing = { script = "request_casting.poethepoet:reusing" }
 test = { script = "request_casting.poethepoet:test" }
 coverage = { script = "request_casting.poethepoet:coverage" }
 translate = { script = "request_casting.poethepoet:translate" }
-
-[project.urls]
-homepage = "https://github.com/turulomio/request_casting/"
-repository = "https://github.com/turulomio/request_casting/"
-changelog = "https://github.com/turulomio/request_casting#changelog"

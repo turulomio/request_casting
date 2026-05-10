@@ -312,3 +312,10 @@ def all_args_are_not_empty(*args):
         if arg is None or arg=="":
             return False
     return True
+
+## Returns false if some arg is None
+def all_args_are_none(*args):
+    for arg in args:
+        if arg is not None:
+            return False
+    return True
