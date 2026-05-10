@@ -1,7 +1,7 @@
 
 [project]
 name = "request_casting"
-version = "0.7.0"
+version = "1.0.0"
 description = "Provide method to cast django request data for POST and GET methods"
 authors = [{name = "turulomio", email = "turulomio@yahoo.es"}]
 license = {text = "GPL-3.0 license"}
